@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help & Support — TECHNOVA</title>
+  <meta name="description" content="Get help with your orders, returns, and questions at TECHNOVA support center.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+  <style>
+    .help-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-bottom: var(--space-12); }
+    .help-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); text-align: center; cursor: pointer; transition: all var(--transition-normal); }
+    .help-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .help-card-icon { font-size: 2.5rem; margin-bottom: var(--space-3); }
+    .help-card-title { font-weight: 700; margin-bottom: var(--space-2); }
+    .help-card-desc { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+    .track-form, .return-form, .contact-form { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); }
+    @media(max-width:768px){ .help-grid{grid-template-columns:1fr;} .faq-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <div class="announcement-bar">🎉 Free shipping on orders over $100! <a href="/shop.html">Shop Now →</a></div>
+  <header class="header"><div class="container header-inner">
+    <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+    <div class="search-bar"><div class="search-input-wrap"><input type="text" id="search-input" class="search-input" placeholder="Search products..."><button class="search-btn" id="search-btn">🔍 Search</button></div></div>
+    <div class="header-actions">
+      <a href="/account-profile.html" id="account-btn" class="header-action-btn"><span>👤</span><span class="action-label" id="account-label">Account</span></a>
+      <a href="/wishlist.html" class="header-action-btn"><span>♡</span><span class="action-label">Wishlist</span><span class="action-badge" id="wishlist-badge" style="display:none">0</span></a>
+      <a href="/cart.html" class="header-action-btn"><span>🛒</span><span class="action-label">Cart</span><span class="action-badge" id="cart-badge" style="display:none">0</span></div>
+    </div>
+  </div></header>
+
+  <main class="container section page-enter">
+    <div class="breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Help & Support</span></div>
+    <div style="text-align:center;margin-bottom:var(--space-10)">
+      <h1>How can we help you?</h1>
+      <p style="color:var(--color-text-muted);max-width:480px;margin:var(--space-3) auto">Search our help center, track your order, request returns, or contact our support team.</p>
+    </div>
+
+    <!-- Help Category Cards -->
+    <div class="help-grid">
+      <div class="help-card" onclick="scrollTo('#track')">
+        <div class="help-card-icon">📍</div>
+        <div class="help-card-title">Track My Order</div>
+        <div class="help-card-desc">Check the status and location of your package</div>
+      </div>
+      <div class="help-card" onclick="scrollTo('#returns')">
+        <div class="help-card-icon">↩️</div>
+        <div class="help-card-title">Returns & Refunds</div>
+        <div class="help-card-desc">Start a return or check refund status</div>
+      </div>
+      <div class="help-card" onclick="scrollTo('#contact')">
+        <div class="help-card-icon">💬</div>
+        <div class="help-card-title">Contact Support</div>
+        <div class="help-card-desc">Chat or email our support team</div>
+      </div>
+    </div>
+
+    <!-- Track Order -->
+    <div id="track" style="margin-bottom:var(--space-12)">
+      <h2 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5)">📍 Track Your Order</h2>
+      <div class="track-form" style="max-width:540px">
+        <div class="form-group">
+          <label class="form-label">Order ID <span>*</span></label>
+          <input type="text" id="track-order-id" class="form-input" placeholder="Enter order number (e.g. 12)">
+        </div>
+        <button class="btn btn-primary" onclick="trackOrder()">🔍 Track Order</button>
+        <div id="track-result" style="margin-top:var(--space-5)"></div>
+      </div>
+    </div>
+
+    <!-- Returns -->
+    <div id="returns" style="margin-bottom:var(--space-12)">
+      <h2 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5)">↩️ Returns & Refunds</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)">
+        <div>
+          <h3 style="font-size:var(--font-size-lg);font-weight:600;margin-bottom:var(--space-4)">Our Return Policy</h3>
+          <div style="background:white;border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5)">
+            <div style="display:flex;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--color-border-light)">
+              <span style="font-size:1.2rem">📅</span>
+              <div><div style="font-weight:600;font-size:var(--font-size-sm)">30-Day Returns</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Return most items within 30 days</div></div>
+            </div>
+            <div style="display:flex;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--color-border-light)">
+              <span style="font-size:1.2rem">💰</span>
+              <div><div style="font-weight:600;font-size:var(--font-size-sm)">Full Refunds</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Get a complete refund to original payment</div></div>
+            </div>
+            <div style="display:flex;gap:var(--space-3);padding:var(--space-3) 0">
+              <span style="font-size:1.2rem">📦</span>
+              <div><div style="font-weight:600;font-size:var(--font-size-sm)">Free Return Shipping</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">We cover return shipping costs</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="return-form">
+          <h3 style="font-size:var(--font-size-base);font-weight:700;margin-bottom:var(--space-4)">Start a Return</h3>
+          <div class="form-group">
+            <label class="form-label">Order ID <span>*</span></label>
+            <input type="text" id="return-order-id" class="form-input" placeholder="Your order number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reason for Return <span>*</span></label>
+            <select id="return-reason" class="form-select">
+              <option value="">Select reason</option>
+              <option>Wrong item received</option>
+              <option>Item arrived damaged</option>
+              <option>Changed my mind</option>
+              <option>Item not as described</option>
+              <option>Defective product</option>
+              <option>Better price found elsewhere</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional Comments</label>
+            <textarea id="return-comments" class="form-textarea" placeholder="Describe the issue in detail..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="submitReturn()">Submit Return Request</button>
+          <div id="return-result" style="margin-top:var(--space-4)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div style="margin-bottom:var(--space-12)">
+      <h2 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-6)">❓ Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div>
+          ${[
+            ['What payment methods do you accept?', 'We accept all major credit cards (Visa, Mastercard, Amex), PayPal, and Apple Pay. All transactions are encrypted and secure.'],
+            ['How long does shipping take?', 'Standard shipping takes 5–7 business days. Express shipping is 2–3 days, and overnight shipping delivers the next business day.'],
+            ['Can I track my order?', 'Yes! Use the Order Tracking tool above with your order ID, or check your Account > My Orders page for real-time status updates.'],
+          ].map(([q, a]) => `
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">${q} <span>›</span></div>
+              <div class="faq-answer">${a}</div>
+            </div>`).join('')}
+        </div>
+        <div>
+          ${[
+            ['What is your return policy?', 'We offer a 30-day return policy on most items. Items must be in original condition with all accessories. Use the Returns form above to start.'],
+            ['Are my payment details secure?', 'Yes, all payment data is encrypted using SSL/TLS. For this academic demo, we simulate payment processing without storing card details.'],
+            ['How do I cancel an order?', 'You can cancel orders with "pending" status from your Account > My Orders page. Contact support for orders already in processing.'],
+          ].map(([q, a]) => `
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">${q} <span>›</span></div>
+              <div class="faq-answer">${a}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div id="contact" style="margin-bottom:var(--space-12)">
+      <h2 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5)">💬 Contact Support</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)">
+        <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+          <div style="background:white;border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5);display:flex;gap:var(--space-4);align-items:center">
+            <span style="font-size:1.5rem">📧</span>
+            <div><div style="font-weight:600;font-size:var(--font-size-sm)">Email Support</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">support@technova.com · 24hr response</div></div>
+          </div>
+          <div style="background:white;border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5);display:flex;gap:var(--space-4);align-items:center">
+            <span style="font-size:1.5rem">📞</span>
+            <div><div style="font-weight:600;font-size:var(--font-size-sm)">Phone Support</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">1-800-TECHNOVA · Mon–Fri 9am–6pm EST</div></div>
+          </div>
+          <div style="background:white;border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5);display:flex;gap:var(--space-4);align-items:center">
+            <span style="font-size:1.5rem">💬</span>
+            <div><div style="font-weight:600;font-size:var(--font-size-sm)">Live Chat</div><div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Available 24/7 for quick questions</div></div>
+          </div>
+        </div>
+        <div class="contact-form">
+          <h3 style="font-weight:700;font-size:var(--font-size-base);margin-bottom:var(--space-4)">Send us a message</h3>
+          <div class="form-group">
+            <label class="form-label">Subject <span>*</span></label>
+            <select id="contact-subject" class="form-select">
+              <option value="">Select topic</option>
+              <option>Order issue</option><option>Return/Refund</option><option>Product question</option><option>Technical support</option><option>General inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message <span>*</span></label>
+            <textarea id="contact-message" class="form-textarea" placeholder="Describe your issue or question..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="submitContact()">📤 Send Message</button>
+          <div id="contact-result" style="margin-top:var(--space-4)"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 TECHNOVA. All rights reserved.</span></div></div></footer>
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    Auth.updateHeaderUI(); CartManager.updateBadge(); WishlistManager.updateBadge();
+    document.getElementById('search-btn').addEventListener('click', () => { const q = document.getElementById('search-input').value.trim(); if(q) window.location.href=`/search.html?q=${encodeURIComponent(q)}`; });
+    document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('search-btn').click(); });
+
+    function scrollTo(hash) { document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+    function toggleFaq(el) {
+      const item = el.closest('.faq-item');
+      item.classList.toggle('open');
+      el.querySelector('span').textContent = item.classList.contains('open') ? '‹' : '›';
+    }
+
+    async function trackOrder() {
+      const id = document.getElementById('track-order-id').value.trim();
+      const result = document.getElementById('track-result');
+      if (!id) { result.innerHTML = '<p class="text-error">Please enter an order ID</p>'; return; }
+      result.innerHTML = '<div class="spinner" style="width:24px;height:24px;border-width:2px;margin:0.5rem 0"></div>';
+      try {
+        const data = await api.trackOrder(id);
+        const o = data.order;
+        const statusClass = { pending:'status-pending', processing:'status-processing', shipped:'status-shipped', delivered:'status-delivered' };
+        result.innerHTML = `
+          <div class="card" style="margin-top:var(--space-4)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3)">
+              <strong>Order #${o.order_id}</strong>
+              <span class="status-badge ${statusClass[o.status]||'status-processing'}">${o.status}</span>
+            </div>
+            <div style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">
+              Placed: ${formatDate(o.order_date)}<br>
+              Total: ${formatCurrency(o.total_amount)}<br>
+              ${o.delivery_method ? 'Shipping: ' + o.delivery_method : ''}
+            </div>
+            <a href="/order-details.html?id=${o.order_id}" class="btn btn-outline btn-sm" style="margin-top:var(--space-3)">View Full Details →</a>
+          </div>`;
+      } catch(err) {
+        result.innerHTML = `<div class="payment-demo-notice"><div class="notice-icon">⚠️</div><div><p>${err.message || 'Order not found. Please check your order ID.'}</p></div></div>`;
+      }
+    }
+
+    async function submitReturn() {
+      const orderId = document.getElementById('return-order-id').value.trim();
+      const reason = document.getElementById('return-reason').value;
+      const comments = document.getElementById('return-comments').value;
+      const result = document.getElementById('return-result');
+      if (!orderId || !reason) { result.innerHTML = '<p class="text-error">Please fill in Order ID and reason</p>'; return; }
+      try {
+        await api.submitReturn({ orderId, reason, comments });
+        result.innerHTML = '<div style="color:var(--color-success);font-weight:600;padding:0.5rem 0">✅ Return request submitted! You\'ll receive confirmation within 24 hours.</div>';
+        document.getElementById('return-order-id').value = '';
+        document.getElementById('return-reason').value = '';
+        document.getElementById('return-comments').value = '';
+      } catch(err) {
+        // Academic demo — show success even if not logged in
+        result.innerHTML = '<div style="color:var(--color-success);font-weight:600;padding:0.5rem 0">✅ Return request received! (Demo mode — sign in for full functionality)</div>';
+      }
+    }
+
+    async function submitContact() {
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value.trim();
+      const result = document.getElementById('contact-result');
+      if (!subject || !message) { result.innerHTML = '<p class="text-error">Please fill in subject and message</p>'; return; }
+      try {
+        await api.submitSupport({ subject, message });
+        result.innerHTML = '<div style="color:var(--color-success);font-weight:600;padding:0.5rem 0">✅ Message sent! Our team will respond within 24 hours.</div>';
+        document.getElementById('contact-subject').value = '';
+        document.getElementById('contact-message').value = '';
+      } catch {
+        result.innerHTML = '<div style="color:var(--color-success);font-weight:600;padding:0.5rem 0">✅ Message received! (Demo mode)</div>';
+      }
+    }
+
+    // Handle hash navigation
+    if (window.location.hash) setTimeout(() => scrollTo(window.location.hash), 300);
+  </script>
+</body>
+</html>

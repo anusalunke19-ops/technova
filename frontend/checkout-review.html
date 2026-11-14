@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Order — TECHNOVA</title>
+  <meta name="description" content="Review and confirm your TECHNOVA order before placing it.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+  <style>
+    .review-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
+    .review-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .review-section-title { font-size: var(--font-size-base); font-weight: var(--font-weight-bold); margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; }
+    .review-row { display: flex; justify-content: space-between; align-items: flex-start; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border-light); font-size: var(--font-size-sm); }
+    .review-row:last-child { border-bottom: none; }
+    .processing-overlay { position: fixed; inset: 0; background: rgba(10,22,40,0.7); backdrop-filter: blur(4px); z-index: 999; display: none; align-items: center; justify-content: center; flex-direction: column; gap: var(--space-4); }
+    .processing-overlay.show { display: flex; }
+    .processing-text { color: white; font-size: var(--font-size-lg); font-weight: 600; }
+    @media(max-width:768px){ .review-layout{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header class="header" style="position:static;border-bottom:1px solid var(--color-border)">
+    <div class="container header-inner">
+      <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+      <div style="font-size:var(--font-size-sm);color:var(--color-text-muted)">🔒 Secure Checkout</div>
+      <a href="/checkout-payment.html" class="btn btn-outline-dark btn-sm">← Back</a>
+    </div>
+  </header>
+
+  <main class="container section page-enter">
+    <div class="checkout-steps">
+      <div class="checkout-step completed"><div class="step-number">✓</div><div class="step-label">Shipping</div></div>
+      <div class="step-connector done"></div>
+      <div class="checkout-step completed"><div class="step-number">✓</div><div class="step-label">Payment</div></div>
+      <div class="step-connector done"></div>
+      <div class="checkout-step active"><div class="step-number">3</div><div class="step-label">Review</div></div>
+    </div>
+
+    <div class="review-layout">
+      <div>
+        <!-- Items Review -->
+        <div class="review-card">
+          <div class="review-section-title">🛒 Order Items</div>
+          <div id="review-items">
+            <div class="spinner" style="width:24px;height:24px;border-width:2px;margin:var(--space-4) auto"></div>
+          </div>
+        </div>
+
+        <!-- Shipping Review -->
+        <div class="review-card">
+          <div class="review-section-title">📦 Shipping Address <a href="/checkout-shipping.html" class="btn btn-ghost btn-sm" style="font-size:var(--font-size-xs)">Edit</a></div>
+          <div id="review-shipping" style="font-size:var(--font-size-sm);color:var(--color-text-secondary);line-height:1.75"></div>
+        </div>
+
+        <!-- Payment Review -->
+        <div class="review-card">
+          <div class="review-section-title">💳 Payment Method <a href="/checkout-payment.html" class="btn btn-ghost btn-sm" style="font-size:var(--font-size-xs)">Edit</a></div>
+          <div id="review-payment" style="font-size:var(--font-size-sm);color:var(--color-text-secondary)"></div>
+        </div>
+      </div>
+
+      <!-- Summary + Place Order -->
+      <div>
+        <div class="order-summary-box" style="position:sticky;top:calc(var(--header-height) + 1rem)">
+          <div class="order-summary-title">Order Total</div>
+          <div class="order-summary-row"><span>Subtotal</span><span id="sum-subtotal">—</span></div>
+          <div class="order-summary-row"><span>Shipping</span><span id="sum-shipping">—</span></div>
+          <div class="order-summary-row"><span>Tax (8%)</span><span id="sum-tax">—</span></div>
+          <div class="order-summary-row total"><span>Total</span><span id="sum-total">—</span></div>
+          <button id="place-order-btn" class="btn btn-primary btn-block btn-xl" style="margin-top:var(--space-5)" onclick="placeOrder()">
+            🛍️ Place Order
+          </button>
+          <p style="font-size:var(--font-size-xs);color:var(--color-text-muted);text-align:center;margin-top:var(--space-3)">
+            By placing this order you agree to our Terms of Service.<br>
+            🔒 Payment is fully encrypted and secure.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Processing Overlay -->
+  <div class="processing-overlay" id="processing-overlay">
+    <div class="spinner" style="width:60px;height:60px;border-width:4px;border-color:rgba(255,255,255,0.2);border-top-color:white"></div>
+    <div class="processing-text" id="processing-text">Processing your payment...</div>
+    <div style="color:rgba(255,255,255,0.7);font-size:var(--font-size-sm)">Please do not close this window</div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    if (!Auth.isLoggedIn()) window.location.href = '/signin.html';
+    if (!sessionStorage.getItem('tn_shipping_address') || !sessionStorage.getItem('tn_payment_data')) {
+      window.location.href = '/checkout-shipping.html';
+    }
+
+    const shipping = JSON.parse(sessionStorage.getItem('tn_shipping_address') || '{}');
+    const payment = JSON.parse(sessionStorage.getItem('tn_payment_data') || '{}');
+    const items = JSON.parse(sessionStorage.getItem('tn_cart_items') || '[]');
+    const subtotal = parseFloat(sessionStorage.getItem('tn_cart_subtotal') || 0);
+    const shippingCost = parseFloat(sessionStorage.getItem('tn_shipping_cost') || 0);
+    const tax = parseFloat(sessionStorage.getItem('tn_cart_tax') || 0);
+    const total = parseFloat(sessionStorage.getItem('tn_order_total') || subtotal + shippingCost + tax);
+    const deliveryMethod = sessionStorage.getItem('tn_delivery_method') || 'standard';
+
+    // Fill summaries
+    document.getElementById('sum-subtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('sum-shipping').textContent = shippingCost === 0 ? 'FREE' : formatCurrency(shippingCost);
+    document.getElementById('sum-tax').textContent = formatCurrency(tax);
+    document.getElementById('sum-total').textContent = formatCurrency(total);
+
+    document.getElementById('review-items').innerHTML = items.length
+      ? items.map(i => `
+        <div class="review-row">
+          <span style="color:var(--color-text-secondary)">${i.name} <span style="font-weight:600">×${i.quantity}</span></span>
+          <span style="font-weight:600">${formatCurrency(i.price * i.quantity)}</span>
+        </div>`).join('')
+      : '<p class="text-muted">No items</p>';
+
+    document.getElementById('review-shipping').innerHTML = `
+      <strong>${shipping.name}</strong><br>
+      ${shipping.address}<br>
+      ${shipping.city}, ${shipping.state} ${shipping.zip}<br>
+      ${shipping.country}<br>
+      📧 ${shipping.email}${shipping.phone ? '<br>📞 ' + shipping.phone : ''}`;
+
+    const methodLabels = { card: `💳 Credit Card ending in ${payment.cardLast4 || '****'}`, paypal: '🅿️ PayPal', apple_pay: '🍎 Apple Pay' };
+    document.getElementById('review-payment').textContent = methodLabels[payment.method] || payment.method;
+
+    async function placeOrder() {
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      document.getElementById('processing-overlay').classList.add('show');
+      document.getElementById('processing-text').textContent = 'Creating your order...';
+
+      try {
+        // 1. Create order
+        const orderPayload = {
+          items: items.map(i => ({ productId: i.productId, quantity: i.quantity })),
+          shippingAddress: shipping,
+          deliveryMethod: deliveryMethod
+        };
+        const orderData = await api.createOrder(orderPayload);
+        const orderId = orderData.order.order_id;
+
+        document.getElementById('processing-text').textContent = 'Processing payment...';
+        await new Promise(r => setTimeout(r, 1200));
+
+        // 2. Simulate payment
+        const paymentPayload = {
+          orderId,
+          method: payment.method,
+          amount: total,
+          ...(payment.method === 'card' && { cardNumber: payment.cardNumber, cardExpiry: payment.cardExpiry })
+        };
+        const paymentResult = await api.simulatePayment(paymentPayload);
+
+        document.getElementById('processing-text').textContent = 'Finalizing order...';
+        await new Promise(r => setTimeout(r, 800));
+
+        // 3. Clear session data
+        ['tn_cart_subtotal','tn_cart_tax','tn_cart_items','tn_shipping_cost','tn_order_total',
+         'tn_shipping_address','tn_delivery_method','tn_payment_data'].forEach(k => sessionStorage.removeItem(k));
+
+        // 4. Redirect to confirmation
+        window.location.href = `/order-confirmation.html?orderId=${orderId}&ref=${paymentResult.payment?.payment_reference || ''}`;
+
+      } catch(err) {
+        document.getElementById('processing-overlay').classList.remove('show');
+        btn.disabled = false;
+        showToast(err.message || 'Order failed. Please try again.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

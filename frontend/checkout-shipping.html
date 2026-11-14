@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Information — TECHNOVA</title>
+  <meta name="description" content="Enter your shipping address for your TECHNOVA order.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+  <style>
+    .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
+    .checkout-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: var(--space-6); }
+    .checkout-card-title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-bottom: var(--space-5); }
+    .delivery-options { display: flex; flex-direction: column; gap: var(--space-3); }
+    .delivery-option { border: 2px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); cursor: pointer; display: flex; align-items: center; gap: var(--space-4); transition: all var(--transition-fast); }
+    .delivery-option:hover, .delivery-option.selected { border-color: var(--color-primary); background: var(--color-primary-50); }
+    .delivery-option input { accent-color: var(--color-primary); }
+    @media(max-width:768px){ .checkout-layout{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header class="header" style="position:static;border-bottom:1px solid var(--color-border)">
+    <div class="container header-inner">
+      <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+      <div style="font-size:var(--font-size-sm);color:var(--color-text-muted)">🔒 Secure Checkout</div>
+      <a href="/cart.html" class="btn btn-outline-dark btn-sm">← Back to Cart</a>
+    </div>
+  </header>
+
+  <main class="container section page-enter">
+    <!-- Checkout Steps -->
+    <div class="checkout-steps">
+      <div class="checkout-step active">
+        <div class="step-number">1</div>
+        <div class="step-label">Shipping</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="checkout-step inactive">
+        <div class="step-number">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="checkout-step inactive">
+        <div class="step-number">3</div>
+        <div class="step-label">Review</div>
+      </div>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+        <div class="checkout-card" style="margin-bottom:var(--space-5)">
+          <div class="checkout-card-title">📦 Shipping Address</div>
+          <form id="shipping-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name <span>*</span></label>
+                <input type="text" id="first-name" class="form-input" required placeholder="John">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name <span>*</span></label>
+                <input type="text" id="last-name" class="form-input" required placeholder="Doe">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address <span>*</span></label>
+              <input type="email" id="email" class="form-input" required placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="phone" class="form-input" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Street Address <span>*</span></label>
+              <input type="text" id="address" class="form-input" required placeholder="123 Main Street">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Apartment / Suite (optional)</label>
+              <input type="text" id="address2" class="form-input" placeholder="Apt 4B">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">City <span>*</span></label>
+                <input type="text" id="city" class="form-input" required placeholder="San Francisco">
+              </div>
+              <div class="form-group">
+                <label class="form-label">State <span>*</span></label>
+                <input type="text" id="state" class="form-input" required placeholder="CA">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">ZIP Code <span>*</span></label>
+                <input type="text" id="zip" class="form-input" required placeholder="94105">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Country</label>
+                <select id="country" class="form-select">
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="checkout-card">
+          <div class="checkout-card-title">🚚 Delivery Method</div>
+          <div class="delivery-options">
+            <label class="delivery-option selected" id="opt-standard">
+              <input type="radio" name="delivery" value="standard" checked>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:var(--font-size-sm)">Standard Shipping</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">5–7 business days</div>
+              </div>
+              <div style="font-weight:700;color:var(--color-success)">FREE</div>
+            </label>
+            <label class="delivery-option" id="opt-express">
+              <input type="radio" name="delivery" value="express">
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:var(--font-size-sm)">Express Shipping</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">2–3 business days</div>
+              </div>
+              <div style="font-weight:700">$12.99</div>
+            </label>
+            <label class="delivery-option" id="opt-overnight">
+              <input type="radio" name="delivery" value="overnight">
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:var(--font-size-sm)">Overnight Shipping</div>
+                <div style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Next business day</div>
+              </div>
+              <div style="font-weight:700">$29.99</div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div>
+        <div class="order-summary-box" style="position:sticky;top:calc(var(--header-height) + 1rem)">
+          <div class="order-summary-title">Order Summary</div>
+          <div id="cart-summary-items" style="margin-bottom:var(--space-4)">
+            <div class="spinner" style="margin:var(--space-4) auto;width:24px;height:24px;border-width:2px"></div>
+          </div>
+          <div class="order-summary-row"><span>Subtotal</span><span id="summary-subtotal">—</span></div>
+          <div class="order-summary-row"><span>Shipping</span><span id="summary-shipping">FREE</span></div>
+          <div class="order-summary-row"><span>Tax (8%)</span><span id="summary-tax">—</span></div>
+          <div class="order-summary-row total"><span>Total</span><span id="summary-total">—</span></div>
+          <button id="continue-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:var(--space-4)" onclick="continueToPayment()">Continue to Payment →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    if (!Auth.isLoggedIn()) window.location.href = '/signin.html?redirect=/checkout-shipping.html';
+
+    // Pre-fill from profile
+    async function prefillProfile() {
+      try {
+        const data = await api.getProfile();
+        const p = data.customer;
+        if (!p) return;
+        const names = (p.name || '').split(' ');
+        document.getElementById('first-name').value = names[0] || '';
+        document.getElementById('last-name').value = names.slice(1).join(' ') || '';
+        document.getElementById('email').value = p.email || '';
+        document.getElementById('phone').value = p.phone || '';
+        document.getElementById('address').value = p.address || '';
+        document.getElementById('city').value = p.city || '';
+        document.getElementById('state').value = p.state || '';
+        document.getElementById('zip').value = p.zip_code || '';
+      } catch {}
+    }
+
+    async function loadCartSummary() {
+      try {
+        const data = await api.getCart();
+        const items = data.items || [];
+        const subtotal = items.reduce((s,i) => s + i.price * i.quantity, 0);
+        const tax = subtotal * 0.08;
+        document.getElementById('cart-summary-items').innerHTML = items.map(i => `
+          <div style="display:flex;justify-content:space-between;font-size:var(--font-size-xs);padding:0.3rem 0;border-bottom:1px solid var(--color-border-light)">
+            <span style="color:var(--color-text-secondary);flex:1">${i.name} ×${i.quantity}</span>
+            <span style="font-weight:600">${formatCurrency(i.price * i.quantity)}</span>
+          </div>`).join('');
+        document.getElementById('summary-subtotal').textContent = formatCurrency(subtotal);
+        document.getElementById('summary-tax').textContent = formatCurrency(tax);
+        updateShippingCost(subtotal, tax);
+        // Store for next step
+        sessionStorage.setItem('tn_cart_subtotal', subtotal);
+        sessionStorage.setItem('tn_cart_tax', tax);
+        sessionStorage.setItem('tn_cart_items', JSON.stringify(items));
+      } catch(err) {
+        document.getElementById('cart-summary-items').innerHTML = `<div class="text-muted text-sm">Could not load cart: ${err.message}</div>`;
+      }
+    }
+
+    const shippingCosts = { standard: 0, express: 12.99, overnight: 29.99 };
+    function updateShippingCost(subtotal, tax) {
+      const method = document.querySelector('input[name="delivery"]:checked').value;
+      let shipping = subtotal >= 100 ? 0 : shippingCosts[method];
+      if (method !== 'standard') shipping = shippingCosts[method];
+      const total = (subtotal || 0) + shipping + (tax || subtotal * 0.08);
+      document.getElementById('summary-shipping').textContent = shipping === 0 ? 'FREE' : formatCurrency(shipping);
+      document.getElementById('summary-total').textContent = formatCurrency(total);
+      sessionStorage.setItem('tn_shipping_cost', shipping);
+      sessionStorage.setItem('tn_order_total', total);
+    }
+
+    document.querySelectorAll('input[name="delivery"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('.delivery-option').forEach(o => o.classList.remove('selected'));
+        radio.closest('.delivery-option').classList.add('selected');
+        const sub = parseFloat(sessionStorage.getItem('tn_cart_subtotal') || 0);
+        const tax = parseFloat(sessionStorage.getItem('tn_cart_tax') || 0);
+        updateShippingCost(sub, tax);
+      });
+    });
+
+    function continueToPayment() {
+      const f = document.getElementById('shipping-form');
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      const shippingData = {
+        name: `${document.getElementById('first-name').value} ${document.getElementById('last-name').value}`.trim(),
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value + (document.getElementById('address2').value ? ', ' + document.getElementById('address2').value : ''),
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip: document.getElementById('zip').value,
+        country: document.getElementById('country').value,
+      };
+      sessionStorage.setItem('tn_shipping_address', JSON.stringify(shippingData));
+      sessionStorage.setItem('tn_delivery_method', document.querySelector('input[name="delivery"]:checked').value);
+      window.location.href = '/checkout-payment.html';
+    }
+
+    prefillProfile();
+    loadCartSummary();
+  </script>
+</body>
+</html>

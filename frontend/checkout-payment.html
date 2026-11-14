@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment — TECHNOVA</title>
+  <meta name="description" content="Securely pay for your TECHNOVA order using card, PayPal, or Apple Pay.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+  <style>
+    .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
+    .checkout-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .checkout-card-title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-bottom: var(--space-5); }
+    .payment-methods { display: flex; flex-direction: column; gap: var(--space-3); }
+    .card-form { margin-top: var(--space-5); display: none; }
+    .card-form.visible { display: block; }
+    .card-icons { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .card-icon-badge { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 2px 8px; font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); }
+    @media(max-width:768px){ .checkout-layout{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header class="header" style="position:static;border-bottom:1px solid var(--color-border)">
+    <div class="container header-inner">
+      <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+      <div style="font-size:var(--font-size-sm);color:var(--color-text-muted)">🔒 Secure Checkout</div>
+      <a href="/checkout-shipping.html" class="btn btn-outline-dark btn-sm">← Back</a>
+    </div>
+  </header>
+
+  <main class="container section page-enter">
+    <div class="checkout-steps">
+      <div class="checkout-step completed"><div class="step-number">✓</div><div class="step-label">Shipping</div></div>
+      <div class="step-connector done"></div>
+      <div class="checkout-step active"><div class="step-number">2</div><div class="step-label">Payment</div></div>
+      <div class="step-connector"></div>
+      <div class="checkout-step inactive"><div class="step-number">3</div><div class="step-label">Review</div></div>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+        <!-- Demo Notice -->
+        <div class="payment-demo-notice">
+          <div class="notice-icon">🧪</div>
+          <div>
+            <strong>Academic Demo — Simulated Payment</strong>
+            Use test card <strong>4242 4242 4242 4242</strong> (any expiry/CVV) for success.<br>
+            Use <strong>4000 0000 0000 0002</strong> for a declined card simulation.
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="checkout-card">
+          <div class="checkout-card-title">💳 Payment Method</div>
+          <div class="payment-methods">
+            <div class="payment-method-card selected" id="pm-card" onclick="selectPayment('card')">
+              <div class="payment-method-icon">💳</div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">Credit / Debit Card</div>
+                <div class="payment-method-desc">Visa, Mastercard, Amex, Discover</div>
+              </div>
+              <input type="radio" name="payment-type" value="card" checked style="margin-left:auto;accent-color:var(--color-primary)">
+            </div>
+            <div class="payment-method-card" id="pm-paypal" onclick="selectPayment('paypal')">
+              <div class="payment-method-icon">🅿️</div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">PayPal</div>
+                <div class="payment-method-desc">Pay with your PayPal account</div>
+              </div>
+              <input type="radio" name="payment-type" value="paypal" style="margin-left:auto;accent-color:var(--color-primary)">
+            </div>
+            <div class="payment-method-card" id="pm-apple" onclick="selectPayment('apple_pay')">
+              <div class="payment-method-icon">🍎</div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">Apple Pay</div>
+                <div class="payment-method-desc">Pay with Touch ID or Face ID</div>
+              </div>
+              <input type="radio" name="payment-type" value="apple_pay" style="margin-left:auto;accent-color:var(--color-primary)">
+            </div>
+          </div>
+
+          <!-- Card Form -->
+          <div class="card-form visible" id="card-form">
+            <div class="card-icons">
+              <span class="card-icon-badge">VISA</span>
+              <span class="card-icon-badge">MC</span>
+              <span class="card-icon-badge">AMEX</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cardholder Name <span>*</span></label>
+              <input type="text" id="card-name" class="form-input" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Card Number <span>*</span></label>
+              <input type="text" id="card-number" class="form-input" placeholder="4242 4242 4242 4242" maxlength="19" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Expiry Date <span>*</span></label>
+                <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CVV <span>*</span></label>
+                <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="4" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- PayPal Form -->
+          <div class="card-form" id="paypal-form">
+            <div class="form-group">
+              <label class="form-label">PayPal Email</label>
+              <input type="email" id="paypal-email" class="form-input" placeholder="yourpaypal@email.com">
+            </div>
+            <p style="font-size:var(--font-size-xs);color:var(--color-text-muted)">You will be redirected to PayPal to complete your payment (simulated).</p>
+          </div>
+
+          <!-- Apple Pay Form -->
+          <div class="card-form" id="apple-form">
+            <div style="text-align:center;padding:var(--space-5);background:var(--color-background);border-radius:var(--radius-lg)">
+              <div style="font-size:3rem;margin-bottom:var(--space-3)">🍎</div>
+              <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-4)">Complete payment using Apple Pay (simulated for academic demo)</p>
+              <div style="background:black;color:white;border-radius:var(--radius-lg);padding:0.75rem 2rem;display:inline-block;font-size:var(--font-size-sm);font-weight:600">🍎 Pay with Apple Pay</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Address -->
+        <div class="checkout-card">
+          <div class="checkout-card-title">📍 Billing Address</div>
+          <div class="form-check" style="margin-bottom:var(--space-4)">
+            <input type="checkbox" id="same-address" checked>
+            <label for="same-address">Same as shipping address</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div>
+        <div class="order-summary-box" style="position:sticky;top:calc(var(--header-height) + 1rem)">
+          <div class="order-summary-title">Order Summary</div>
+          <div id="summary-items" style="margin-bottom:var(--space-4);max-height:200px;overflow-y:auto"></div>
+          <div class="order-summary-row"><span>Subtotal</span><span id="sum-subtotal">—</span></div>
+          <div class="order-summary-row"><span>Shipping</span><span id="sum-shipping">—</span></div>
+          <div class="order-summary-row"><span>Tax</span><span id="sum-tax">—</span></div>
+          <div class="order-summary-row total"><span>Total</span><span id="sum-total">—</span></div>
+          <button id="pay-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:var(--space-4)" onclick="continueToReview()">Review Order →</button>
+          <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-2);margin-top:var(--space-4);font-size:var(--font-size-xs);color:var(--color-text-muted)">
+            🔒 SSL Encrypted · Secure Payment
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    if (!Auth.isLoggedIn()) window.location.href = '/signin.html';
+    if (!sessionStorage.getItem('tn_shipping_address')) window.location.href = '/checkout-shipping.html';
+
+    // Load summary from session
+    const subtotal = parseFloat(sessionStorage.getItem('tn_cart_subtotal') || 0);
+    const shipping = parseFloat(sessionStorage.getItem('tn_shipping_cost') || 0);
+    const tax = parseFloat(sessionStorage.getItem('tn_cart_tax') || 0);
+    const total = parseFloat(sessionStorage.getItem('tn_order_total') || subtotal + shipping + tax);
+    const items = JSON.parse(sessionStorage.getItem('tn_cart_items') || '[]');
+
+    document.getElementById('sum-subtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('sum-shipping').textContent = shipping === 0 ? 'FREE' : formatCurrency(shipping);
+    document.getElementById('sum-tax').textContent = formatCurrency(tax);
+    document.getElementById('sum-total').textContent = formatCurrency(total);
+    document.getElementById('summary-items').innerHTML = items.map(i => `
+      <div style="display:flex;justify-content:space-between;font-size:var(--font-size-xs);padding:0.3rem 0;border-bottom:1px solid var(--color-border-light)">
+        <span style="color:var(--color-text-secondary)">${i.name} ×${i.quantity}</span>
+        <span style="font-weight:600">${formatCurrency(i.price * i.quantity)}</span>
+      </div>`).join('');
+
+    // Card number formatting
+    document.getElementById('card-number').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').substring(0,16);
+      this.value = v.replace(/(.{4})/g,'$1 ').trim();
+    });
+    document.getElementById('card-expiry').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').substring(0,4);
+      if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+      this.value = v;
+    });
+
+    function selectPayment(method) {
+      document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.card-form').forEach(f => f.classList.remove('visible'));
+      document.getElementById(`pm-${method.replace('_pay','')}`).classList.add('selected');
+      const formMap = { card: 'card-form', paypal: 'paypal-form', apple_pay: 'apple-form' };
+      if (formMap[method]) document.getElementById(formMap[method]).classList.add('visible');
+    }
+
+    function continueToReview() {
+      const method = document.querySelector('input[name="payment-type"]:checked').value;
+      let paymentData = { method };
+      if (method === 'card') {
+        const num = document.getElementById('card-number').value.replace(/\s/g,'');
+        const exp = document.getElementById('card-expiry').value;
+        const cvv = document.getElementById('card-cvv').value;
+        const name = document.getElementById('card-name').value;
+        if (!num || !exp || !cvv || !name) { showToast('Please fill in all card details', 'error'); return; }
+        paymentData.cardNumber = num;
+        paymentData.cardLast4 = num.slice(-4);
+        paymentData.cardExpiry = exp;
+        paymentData.cardName = name;
+      }
+      sessionStorage.setItem('tn_payment_data', JSON.stringify(paymentData));
+      window.location.href = '/checkout-review.html';
+    }
+  </script>
+</body>
+</html>

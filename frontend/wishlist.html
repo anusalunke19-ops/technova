@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist — TECHNOVA</title>
+  <meta name="description" content="View and manage your TECHNOVA wishlist of saved products.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div class="announcement-bar">🎉 Free shipping on orders over $100! <a href="/shop.html">Shop Now →</a></div>
+  <header class="header"><div class="container header-inner">
+    <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+    <div class="search-bar"><div class="search-input-wrap"><input type="text" id="search-input" class="search-input" placeholder="Search products..."><button class="search-btn" id="search-btn">🔍 Search</button></div></div>
+    <div class="header-actions">
+      <a href="/account-profile.html" id="account-btn" class="header-action-btn"><span>👤</span><span class="action-label" id="account-label">Account</span></a>
+      <a href="/wishlist.html" class="header-action-btn"><span>♡</span><span class="action-label">Wishlist</span><span class="action-badge" id="wishlist-badge" style="display:none">0</span></a>
+      <a href="/cart.html" class="header-action-btn"><span>🛒</span><span class="action-label">Cart</span><span class="action-badge" id="cart-badge" style="display:none">0</span></a>
+      <a href="/signin.html" id="logout-btn" class="header-action-btn" style="display:none"><span>🚪</span><span class="action-label">Logout</span></a>
+    </div>
+  </div></header>
+  <nav class="category-nav"><div class="container"><div class="category-nav-inner">
+    <a href="/shop.html" class="cat-nav-link">🏪 All Products</a>
+    <a href="/category.html?slug=smartphones" class="cat-nav-link">📱 Smartphones</a>
+    <a href="/category.html?slug=laptops" class="cat-nav-link">💻 Laptops</a>
+    <a href="/category.html?slug=tablets" class="cat-nav-link">📟 Tablets</a>
+    <a href="/category.html?slug=headphones-earbuds" class="cat-nav-link">🎧 Headphones</a>
+    <a href="/category.html?slug=smartwatches" class="cat-nav-link">⌚ Smartwatches</a>
+    <a href="/category.html?slug=cameras" class="cat-nav-link">📷 Cameras</a>
+    <a href="/category.html?slug=computer-accessories" class="cat-nav-link">🖥️ Accessories</a>
+    <a href="/category.html?slug=gaming" class="cat-nav-link">🎮 Gaming</a>
+  </div></div></nav>
+
+  <main class="container section page-enter">
+    <div class="breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">My Wishlist</span></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6)">
+      <h1 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold)">♡ My Wishlist</h1>
+      <div style="font-size:var(--font-size-sm);color:var(--color-text-muted)" id="wishlist-count"></div>
+    </div>
+    <div id="wishlist-container"><div class="spinner"></div></div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 TECHNOVA. All rights reserved.</span></div></div></footer>
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    Auth.updateHeaderUI(); CartManager.updateBadge(); WishlistManager.updateBadge();
+    document.getElementById('search-btn').addEventListener('click', () => { const q = document.getElementById('search-input').value.trim(); if(q) window.location.href=`/search.html?q=${encodeURIComponent(q)}`; });
+    document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('search-btn').click(); });
+
+    async function loadWishlist() {
+      const container = document.getElementById('wishlist-container');
+      if (!Auth.isLoggedIn()) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔒</div><div class="empty-state-title">Sign in to view your wishlist</div><div class="empty-state-desc">Save products you love and come back later</div><a href="/signin.html?redirect=/wishlist.html" class="btn btn-primary">Sign In</a></div>`;
+        return;
+      }
+      try {
+        const data = await api.getWishlist();
+        const items = data.items || [];
+        document.getElementById('wishlist-count').textContent = `${items.length} item${items.length !== 1 ? 's' : ''} saved`;
+        if (!items.length) {
+          container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">♡</div><div class="empty-state-title">Your wishlist is empty</div><div class="empty-state-desc">Save products you love by clicking the ♡ heart icon on any product</div><a href="/shop.html" class="btn btn-primary">Start Browsing</a></div>`;
+          return;
+        }
+        container.innerHTML = `
+          <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-4)">
+            <button class="btn btn-primary btn-sm" onclick="addAllToCart(wishlistItems)">🛒 Add All to Cart</button>
+          </div>
+          <div id="wishlist-items"></div>`;
+        window.wishlistItems = items;
+        renderWishlistItems(items);
+      } catch(err) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Could not load wishlist</div><div class="empty-state-desc">${err.message}</div></div>`;
+      }
+    }
+
+    function renderWishlistItems(items) {
+      document.getElementById('wishlist-items').innerHTML = items.map(item => {
+        const discount = calcDiscount(item.price, item.original_price);
+        return `
+          <div class="wishlist-item" id="wishlist-${item.productId}">
+            <div class="cart-item-image">
+              <img src="${item.image || 'https://via.placeholder.com/100'}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/100?text=No+Img'">
+            </div>
+            <div>
+              <div style="font-size:var(--font-size-xs);color:var(--color-primary);font-weight:600;margin-bottom:0.25rem">${item.brand || ''}</div>
+              <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:var(--space-2)">
+                <a href="/product.html?id=${item.productId}" style="color:inherit;text-decoration:none">${item.name}</a>
+              </div>
+              <div class="product-card-price" style="margin-bottom:var(--space-3)">
+                <span class="price-current">${formatCurrency(item.price)}</span>
+                ${item.original_price > item.price ? `<span class="price-original">${formatCurrency(item.original_price)}</span>` : ''}
+                ${discount ? `<span class="price-discount">-${discount}%</span>` : ''}
+              </div>
+              <div style="display:flex;gap:var(--space-2)">
+                <button class="btn btn-primary btn-sm" onclick="CartManager.addToCart('${item.productId}')">🛒 Add to Cart</button>
+                <a href="/product.html?id=${item.productId}" class="btn btn-outline-dark btn-sm">View Details</a>
+              </div>
+            </div>
+            <button class="cart-remove-btn" onclick="removeWishlistItem('${item.productId}')" title="Remove from wishlist">🗑️</button>
+          </div>`;
+      }).join('');
+    }
+
+    async function removeWishlistItem(productId) {
+      try {
+        await api.removeFromWishlist(productId);
+        document.getElementById(`wishlist-${productId}`)?.remove();
+        await WishlistManager.updateBadge();
+        showToast('Removed from wishlist', 'info');
+        window.wishlistItems = window.wishlistItems.filter(i => i.productId !== productId);
+        document.getElementById('wishlist-count').textContent = `${window.wishlistItems.length} item${window.wishlistItems.length !== 1 ? 's' : ''} saved`;
+        if (!window.wishlistItems.length) loadWishlist();
+      } catch(err) { showToast(err.message, 'error'); }
+    }
+
+    async function addAllToCart(items) {
+      let count = 0;
+      for (const item of items) {
+        try { await api.addToCart(item.productId, 1); count++; } catch {}
+      }
+      await CartManager.updateBadge();
+      showToast(`${count} item${count !== 1 ? 's' : ''} added to cart!`, 'success');
+    }
+
+    loadWishlist();
+  </script>
+</body>
+</html>

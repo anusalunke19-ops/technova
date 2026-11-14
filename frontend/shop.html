@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All Products — TECHNOVA</title>
+  <meta name="description" content="Browse all technology products at TECHNOVA. Filter by category, price, rating and more.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main class="container section">
+    <div class="breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">Shop All Products</span></div>
+    <div class="shop-layout">
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar">
+        <div class="filter-section">
+          <div class="filter-title">Categories</div>
+          <div id="cat-filters">
+            <label class="filter-option"><input type="radio" name="category" value=""> All Categories</label>
+            <label class="filter-option"><input type="radio" name="category" value="smartphones"> 📱 Smartphones</label>
+            <label class="filter-option"><input type="radio" name="category" value="laptops"> 💻 Laptops</label>
+            <label class="filter-option"><input type="radio" name="category" value="tablets"> 📟 Tablets</label>
+            <label class="filter-option"><input type="radio" name="category" value="headphones-earbuds"> 🎧 Headphones</label>
+            <label class="filter-option"><input type="radio" name="category" value="smartwatches"> ⌚ Smartwatches</label>
+            <label class="filter-option"><input type="radio" name="category" value="cameras"> 📷 Cameras</label>
+            <label class="filter-option"><input type="radio" name="category" value="computer-accessories"> 🖥️ Accessories</label>
+            <label class="filter-option"><input type="radio" name="category" value="gaming"> 🎮 Gaming</label>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-title">Price Range</div>
+          <div class="price-range-inputs">
+            <input type="number" id="min-price" class="price-range-input" placeholder="Min $" min="0">
+            <span>–</span>
+            <input type="number" id="max-price" class="price-range-input" placeholder="Max $" min="0">
+          </div>
+          <button class="btn btn-primary btn-sm w-full mt-4" onclick="applyFilters()">Apply Price</button>
+        </div>
+        <div class="filter-section">
+          <div class="filter-title">Rating</div>
+          <label class="filter-option"><input type="radio" name="rating" value=""> All Ratings</label>
+          <label class="filter-option"><input type="radio" name="rating" value="4.5"> ★ 4.5 & above</label>
+          <label class="filter-option"><input type="radio" name="rating" value="4"> ★ 4.0 & above</label>
+          <label class="filter-option"><input type="radio" name="rating" value="3"> ★ 3.0 & above</label>
+        </div>
+        <button class="btn btn-outline-dark btn-sm w-full" onclick="clearFilters()">Clear All Filters</button>
+      </aside>
+
+      <!-- Products Area -->
+      <div>
+        <div class="sort-toolbar">
+          <div id="result-count" class="text-sm text-muted">Loading products...</div>
+          <select id="sort-select" class="sort-select" onchange="applyFilters()">
+            <option value="-createdAt">Newest First</option>
+            <option value="price">Price: Low to High</option>
+            <option value="-price">Price: High to Low</option>
+            <option value="-rating">Top Rated</option>
+            <option value="-review_count">Most Reviewed</option>
+          </select>
+        </div>
+        <div class="product-grid" id="products-grid">
+          ${Array(8).fill('<div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>').join('')}
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    document.getElementById('header-placeholder').innerHTML = `
+      <div class="announcement-bar">🎉 Free shipping on orders over $100! <a href="/shop.html">Shop Now →</a></div>
+      <header class="header"><div class="container header-inner">
+        <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+        <div class="search-bar"><div class="search-input-wrap"><input type="text" id="search-input" class="search-input" placeholder="Search products..."><button class="search-btn" id="search-btn">🔍 Search</button></div></div>
+        <div class="header-actions">
+          <a href="/account-profile.html" id="account-btn" class="header-action-btn"><span>👤</span><span class="action-label" id="account-label">Account</span></a>
+          <a href="/wishlist.html" class="header-action-btn"><span>♡</span><span class="action-label">Wishlist</span><span class="action-badge" id="wishlist-badge" style="display:none">0</span></a>
+          <a href="/cart.html" class="header-action-btn"><span>🛒</span><span class="action-label">Cart</span><span class="action-badge" id="cart-badge" style="display:none">0</span></a>
+          <a href="/signin.html" id="logout-btn" class="header-action-btn" style="display:none"><span>🚪</span><span class="action-label">Logout</span></a>
+        </div>
+      </div></header>
+      <nav class="category-nav"><div class="container"><div class="category-nav-inner">
+        <a href="/shop.html" class="cat-nav-link active">🏪 All Products</a>
+        <a href="/category.html?slug=smartphones" class="cat-nav-link">📱 Smartphones</a>
+        <a href="/category.html?slug=laptops" class="cat-nav-link">💻 Laptops</a>
+        <a href="/category.html?slug=tablets" class="cat-nav-link">📟 Tablets</a>
+        <a href="/category.html?slug=headphones-earbuds" class="cat-nav-link">🎧 Headphones</a>
+        <a href="/category.html?slug=smartwatches" class="cat-nav-link">⌚ Smartwatches</a>
+        <a href="/category.html?slug=cameras" class="cat-nav-link">📷 Cameras</a>
+        <a href="/category.html?slug=computer-accessories" class="cat-nav-link">🖥️ Accessories</a>
+        <a href="/category.html?slug=gaming" class="cat-nav-link">🎮 Gaming</a>
+      </div></div></nav>`;
+    document.getElementById('footer-placeholder').innerHTML = `<footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 TECHNOVA. All rights reserved.</span></div></div></footer><div id="toast-container" class="toast-container"></div>`;
+
+    let currentPage = 1;
+    const params = new URLSearchParams(window.location.search);
+
+    async function loadProducts(page = 1) {
+      currentPage = page;
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = Array(8).fill('<div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>').join('');
+
+      const category = document.querySelector('input[name="category"]:checked')?.value || params.get('category') || '';
+      const rating = document.querySelector('input[name="rating"]:checked')?.value || '';
+      const sort = document.getElementById('sort-select').value;
+      const minPrice = document.getElementById('min-price').value;
+      const maxPrice = document.getElementById('max-price').value;
+
+      const queryParams = { page, limit: 12, sort };
+      if (category) queryParams.category = category;
+      if (rating) queryParams.rating = rating;
+      if (minPrice) queryParams.minPrice = minPrice;
+      if (maxPrice) queryParams.maxPrice = maxPrice;
+
+      try {
+        const data = await api.getProducts(queryParams);
+        const products = data.products || [];
+        document.getElementById('result-count').textContent = `${data.total || 0} products found`;
+        grid.innerHTML = products.length
+          ? products.map(buildProductCard).join('')
+          : '<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No products found</div><div class="empty-state-desc">Try adjusting your filters</div></div>';
+        renderPagination(data.pages || 1, page);
+      } catch(err) {
+        grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Could not load products</div><div class="empty-state-desc">Make sure the backend server is running on port 5000. <br><small>${err.message}</small></div></div>`;
+      }
+    }
+
+    function renderPagination(totalPages, current) {
+      const pg = document.getElementById('pagination');
+      if (totalPages <= 1) { pg.innerHTML = ''; return; }
+      let html = `<button class="page-btn" onclick="loadProducts(${current-1})" ${current===1?'disabled':''}>‹</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i===current?'active':''}" onclick="loadProducts(${i})">${i}</button>`;
+      }
+      html += `<button class="page-btn" onclick="loadProducts(${current+1})" ${current===totalPages?'disabled':''}>›</button>`;
+      pg.innerHTML = html;
+    }
+
+    function applyFilters() { loadProducts(1); }
+    function clearFilters() {
+      document.querySelectorAll('input[name="category"]')[0].checked = true;
+      document.querySelectorAll('input[name="rating"]')[0].checked = true;
+      document.getElementById('min-price').value = '';
+      document.getElementById('max-price').value = '';
+      loadProducts(1);
+    }
+
+    document.querySelectorAll('input[name="category"], input[name="rating"]').forEach(el => el.addEventListener('change', applyFilters));
+
+    // Set initial category from URL
+    const urlCat = params.get('category');
+    if (urlCat) {
+      const radio = document.querySelector(`input[name="category"][value="${urlCat}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    Auth.updateHeaderUI();
+    CartManager.updateBadge();
+    WishlistManager.updateBadge();
+    document.getElementById('search-btn').addEventListener('click', () => {
+      const q = document.getElementById('search-input').value.trim();
+      if (q) window.location.href = `/search.html?q=${encodeURIComponent(q)}`;
+    });
+    document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('search-btn').click(); });
+
+    loadProducts();
+  </script>
+</body>
+</html>

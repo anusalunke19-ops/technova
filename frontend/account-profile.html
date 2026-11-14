@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — TECHNOVA</title>
+  <meta name="description" content="Manage your TECHNOVA account profile, address, and password settings.">
+  <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <div class="announcement-bar">🎉 Free shipping on orders over $100! <a href="/shop.html">Shop Now →</a></div>
+  <header class="header"><div class="container header-inner">
+    <a href="/index.html" class="header-logo"><div class="logo-mark">T</div><span class="logo-text">TECH<span>NOVA</span></span></a>
+    <div class="search-bar"><div class="search-input-wrap"><input type="text" id="search-input" class="search-input" placeholder="Search products..."><button class="search-btn" id="search-btn">🔍 Search</button></div></div>
+    <div class="header-actions">
+      <a href="/account-profile.html" id="account-btn" class="header-action-btn"><span>👤</span><span class="action-label" id="account-label">Account</span></a>
+      <a href="/wishlist.html" class="header-action-btn"><span>♡</span><span class="action-label">Wishlist</span><span class="action-badge" id="wishlist-badge" style="display:none">0</span></a>
+      <a href="/cart.html" class="header-action-btn"><span>🛒</span><span class="action-label">Cart</span><span class="action-badge" id="cart-badge" style="display:none">0</span></a>
+      <a href="/signin.html" id="logout-btn" class="header-action-btn" style="display:none"><span>🚪</span><span class="action-label">Logout</span></a>
+    </div>
+  </div></header>
+
+  <main class="container section page-enter">
+    <div class="breadcrumb"><a href="/index.html">Home</a><span class="breadcrumb-sep">›</span><span class="breadcrumb-current">My Account</span></div>
+    <div class="account-layout">
+      <!-- Sidebar -->
+      <aside class="account-sidebar">
+        <div class="account-sidebar-user">
+          <div class="account-avatar" id="avatar-initials">?</div>
+          <div class="account-name" id="sidebar-name">Loading...</div>
+          <div class="account-email" id="sidebar-email">...</div>
+        </div>
+        <nav class="account-nav">
+          <a href="/account-profile.html" class="account-nav-link active">👤 My Profile</a>
+          <a href="/account-orders.html" class="account-nav-link">📦 My Orders</a>
+          <a href="/wishlist.html" class="account-nav-link">♡ Wishlist</a>
+          <a href="/compare.html" class="account-nav-link">⚖ Compare</a>
+          <a href="/help.html" class="account-nav-link">❓ Help & Support</a>
+          <a href="#" class="account-nav-link" id="sidebar-logout" style="color:var(--color-error)" onclick="event.preventDefault();Auth.logout()">🚪 Sign Out</a>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <div>
+        <!-- Profile Info -->
+        <div class="card" style="margin-bottom:var(--space-5)">
+          <div class="card-title">Personal Information</div>
+          <form id="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name <span>*</span></label>
+                <input type="text" id="p-name" class="form-input" required placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address <span>*</span></label>
+                <input type="email" id="p-email" class="form-input" required placeholder="email@example.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="p-phone" class="form-input" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Street Address</label>
+              <input type="text" id="p-address" class="form-input" placeholder="123 Main St">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" id="p-city" class="form-input" placeholder="San Francisco">
+              </div>
+              <div class="form-group">
+                <label class="form-label">State</label>
+                <input type="text" id="p-state" class="form-input" placeholder="CA">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">ZIP Code</label>
+                <input type="text" id="p-zip" class="form-input" placeholder="94105">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Country</label>
+                <input type="text" id="p-country" class="form-input" placeholder="United States">
+              </div>
+            </div>
+            <div id="profile-error" class="form-error" style="margin-bottom:var(--space-3)"></div>
+            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card">
+          <div class="card-title">🔒 Change Password</div>
+          <form id="password-form">
+            <div class="form-group">
+              <label class="form-label">Current Password <span>*</span></label>
+              <input type="password" id="current-pw" class="form-input" required placeholder="Enter current password">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">New Password <span>*</span></label>
+                <input type="password" id="new-pw" class="form-input" required minlength="8" placeholder="Min 8 characters">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm New Password <span>*</span></label>
+                <input type="password" id="confirm-pw" class="form-input" required placeholder="Re-enter new password">
+              </div>
+            </div>
+            <div id="pw-error" class="form-error" style="margin-bottom:var(--space-3)"></div>
+            <button type="submit" class="btn btn-secondary">🔑 Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><span>© 2026 TECHNOVA. All rights reserved.</span></div></div></footer>
+  <div id="toast-container" class="toast-container"></div>
+  <script src="/js/api.js"></script><script src="/js/auth.js"></script><script src="/js/cart.js"></script>
+  <script>
+    if (!Auth.requireAuth()) {}
+
+    Auth.updateHeaderUI();
+    CartManager.updateBadge();
+    WishlistManager.updateBadge();
+    document.getElementById('search-btn').addEventListener('click', () => { const q = document.getElementById('search-input').value.trim(); if(q) window.location.href=`/search.html?q=${encodeURIComponent(q)}`; });
+    document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('search-btn').click(); });
+
+    async function loadProfile() {
+      try {
+        const data = await api.getProfile();
+        const p = data.customer;
+        const names = (p.name || '').split(' ');
+        document.getElementById('avatar-initials').textContent = (names[0]?.[0] || '') + (names[1]?.[0] || '');
+        document.getElementById('sidebar-name').textContent = p.name || 'User';
+        document.getElementById('sidebar-email').textContent = p.email || '';
+        document.getElementById('p-name').value = p.name || '';
+        document.getElementById('p-email').value = p.email || '';
+        document.getElementById('p-phone').value = p.phone || '';
+        document.getElementById('p-address').value = p.address || '';
+        document.getElementById('p-city').value = p.city || '';
+        document.getElementById('p-state').value = p.state || '';
+        document.getElementById('p-zip').value = p.zip_code || '';
+        document.getElementById('p-country').value = p.country || '';
+      } catch(err) {
+        if (err.message.includes('401') || err.message.includes('token')) Auth.clearSession(), window.location.href = '/signin.html';
+      }
+    }
+
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = '⏳ Saving...';
+      try {
+        await api.updateProfile({
+          name: document.getElementById('p-name').value,
+          email: document.getElementById('p-email').value,
+          phone: document.getElementById('p-phone').value,
+          address: document.getElementById('p-address').value,
+          city: document.getElementById('p-city').value,
+          state: document.getElementById('p-state').value,
+          zip_code: document.getElementById('p-zip').value,
+          country: document.getElementById('p-country').value,
+        });
+        showToast('Profile updated successfully!', 'success');
+        await loadProfile();
+      } catch(err) {
+        document.getElementById('profile-error').textContent = err.message;
+      } finally {
+        btn.disabled = false; btn.textContent = '💾 Save Changes';
+      }
+    });
+
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newPw = document.getElementById('new-pw').value;
+      const confirmPw = document.getElementById('confirm-pw').value;
+      const errEl = document.getElementById('pw-error');
+      errEl.textContent = '';
+      if (newPw !== confirmPw) { errEl.textContent = 'New passwords do not match'; return; }
+      if (newPw.length < 8) { errEl.textContent = 'Password must be at least 8 characters'; return; }
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = '⏳ Updating...';
+      try {
+        await api.changePassword({ currentPassword: document.getElementById('current-pw').value, newPassword: newPw });
+        showToast('Password updated successfully!', 'success');
+        e.target.reset();
+      } catch(err) {
+        errEl.textContent = err.message;
+      } finally {
+        btn.disabled = false; btn.textContent = '🔑 Update Password';
+      }
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TECHNOVA — Premium Technology Products</title>
+  <meta name="description" content="Shop the latest smartphones, laptops, tablets, headphones, smartwatches, cameras, and gaming gear at TECHNOVA.">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <style>
+    .deals-banner { background: linear-gradient(135deg, #1E6FFF 0%, #7C3AED 100%); color: white; border-radius: var(--radius-2xl); padding: var(--space-10) var(--space-12); display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16); overflow: hidden; position: relative; }
+    .deals-banner::before { content: ''; position: absolute; right: -60px; top: -60px; width: 300px; height: 300px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+    .deals-banner-title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-extrabold); margin-bottom: var(--space-2); }
+    .deals-banner-sub { font-size: var(--font-size-md); opacity: 0.85; margin-bottom: var(--space-6); }
+    .deals-banner-actions { display: flex; gap: var(--space-3); }
+    .btn-white { background: white; color: var(--color-primary); font-weight: var(--font-weight-bold); }
+    .btn-white:hover { background: var(--color-primary-50); transform: translateY(-1px); color: var(--color-primary); }
+    .btn-white-outline { background: transparent; border: 2px solid rgba(255,255,255,0.6); color: white; font-weight: var(--font-weight-semibold); }
+    .btn-white-outline:hover { background: rgba(255,255,255,0.1); color: white; }
+    .deals-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 0.3rem 0.8rem; border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); display: inline-block; margin-bottom: var(--space-3); }
+    .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); margin-bottom: var(--space-16); }
+    .feature-card { background: white; border-radius: var(--radius-xl); padding: var(--space-5); display: flex; align-items: center; gap: var(--space-4); border: 1px solid var(--color-border); transition: box-shadow var(--transition-fast); }
+    .feature-card:hover { box-shadow: var(--shadow-md); }
+    .feature-icon { font-size: 1.75rem; flex-shrink: 0; }
+    .feature-title { font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm); }
+    .feature-desc { font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    🎉 Free shipping on orders over $100! <a href="/shop.html">Shop Now →</a>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="/index.html" class="header-logo">
+        <div class="logo-mark">T</div>
+        <span class="logo-text">TECH<span>NOVA</span></span>
+      </a>
+      <div class="search-bar">
+        <div class="search-input-wrap">
+          <input type="text" id="search-input" class="search-input" placeholder="Search phones, laptops, headphones..." autocomplete="off">
+          <button class="search-btn" id="search-btn">🔍 Search</button>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/account-profile.html" id="account-btn" class="header-action-btn" title="My Account">
+          <span>👤</span><span class="action-label" id="account-label">Account</span>
+        </a>
+        <a href="/wishlist.html" class="header-action-btn" title="Wishlist">
+          <span>♡</span><span class="action-label">Wishlist</span>
+          <span class="action-badge" id="wishlist-badge" style="display:none">0</span>
+        </a>
+        <a href="/cart.html" class="header-action-btn" title="Shopping Cart">
+          <span>🛒</span><span class="action-label">Cart</span>
+          <span class="action-badge" id="cart-badge" style="display:none">0</span>
+        </a>
+        <a href="/signin.html" id="logout-btn" class="header-action-btn" style="display:none" title="Sign Out">
+          <span>🚪</span><span class="action-label">Logout</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Category Navigation -->
+  <nav class="category-nav">
+    <div class="container">
+      <div class="category-nav-inner">
+        <a href="/shop.html" class="cat-nav-link active"><span class="cat-nav-icon">🏪</span>All Products</a>
+        <a href="/category.html?slug=smartphones" class="cat-nav-link"><span class="cat-nav-icon">📱</span>Smartphones</a>
+        <a href="/category.html?slug=laptops" class="cat-nav-link"><span class="cat-nav-icon">💻</span>Laptops</a>
+        <a href="/category.html?slug=tablets" class="cat-nav-link"><span class="cat-nav-icon">📟</span>Tablets</a>
+        <a href="/category.html?slug=headphones-earbuds" class="cat-nav-link"><span class="cat-nav-icon">🎧</span>Headphones</a>
+        <a href="/category.html?slug=smartwatches" class="cat-nav-link"><span class="cat-nav-icon">⌚</span>Smartwatches</a>
+        <a href="/category.html?slug=cameras" class="cat-nav-link"><span class="cat-nav-icon">📷</span>Cameras</a>
+        <a href="/category.html?slug=computer-accessories" class="cat-nav-link"><span class="cat-nav-icon">🖥️</span>Accessories</a>
+        <a href="/category.html?slug=gaming" class="cat-nav-link"><span class="cat-nav-icon">🎮</span>Gaming</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-content">
+        <div class="hero-text">
+          <div class="hero-eyebrow">🚀 New Arrivals — 2026 Collection</div>
+          <h1 class="hero-title">
+            The Future of <span class="highlight">Technology</span><br>Starts Here
+          </h1>
+          <p class="hero-desc">
+            Discover the latest smartphones, laptops, and gadgets from Apple, Samsung, Sony, and more. 
+            Premium tech at competitive prices with fast, free shipping.
+          </p>
+          <div class="hero-actions">
+            <a href="/shop.html" class="btn btn-primary btn-lg">🛍️ Shop Deals</a>
+            <a href="#categories" class="btn btn-outline btn-lg" style="color:white;border-color:rgba(255,255,255,0.4)">Explore Categories</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" alt="Featured Technology Products" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- Features -->
+      <div class="section-sm">
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-icon">🚚</span>
+            <div><div class="feature-title">Free Shipping</div><div class="feature-desc">On orders over $100</div></div>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🔒</span>
+            <div><div class="feature-title">Secure Payment</div><div class="feature-desc">100% protected checkout</div></div>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">↩️</span>
+            <div><div class="feature-title">Easy Returns</div><div class="feature-desc">30-day return policy</div></div>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🎧</span>
+            <div><div class="feature-title">24/7 Support</div><div class="feature-desc">Expert help anytime</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Deals Banner -->
+      <div class="deals-banner">
+        <div>
+          <div class="deals-badge">⚡ Limited Time Offers</div>
+          <div class="deals-banner-title">Up to 30% Off<br>Top Tech Brands</div>
+          <div class="deals-banner-sub">MacBooks, iPhones, Sony, Samsung and more</div>
+          <div class="deals-banner-actions">
+            <a href="/shop.html" class="btn btn-white btn-lg">Shop Deals</a>
+            <a href="/category.html?slug=laptops" class="btn btn-white-outline btn-lg">View Laptops</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <section class="section-sm" id="categories">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Shop by Category</div>
+            <div class="section-subtitle">Find exactly what you're looking for</div>
+          </div>
+          <a href="/shop.html" class="btn btn-outline-dark btn-sm">View All →</a>
+        </div>
+        <div class="category-grid" id="categories-grid">
+          <div class="skeleton" style="height:120px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:120px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:120px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:120px;border-radius:var(--radius-xl)"></div>
+        </div>
+      </section>
+
+      <!-- Featured Products -->
+      <section class="section-sm">
+        <div class="section-header">
+          <div>
+            <div class="section-title">⭐ Featured Products</div>
+            <div class="section-subtitle">Handpicked top-rated technology</div>
+          </div>
+          <a href="/shop.html" class="btn btn-outline-dark btn-sm">View All →</a>
+        </div>
+        <div class="product-grid" id="featured-products">
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+        </div>
+      </section>
+
+      <!-- New Arrivals -->
+      <section class="section-sm">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🆕 New Arrivals</div>
+            <div class="section-subtitle">The latest in tech innovation</div>
+          </div>
+          <a href="/shop.html?sort=-createdAt" class="btn btn-outline-dark btn-sm">See All →</a>
+        </div>
+        <div class="product-grid" id="new-arrivals">
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+          <div class="skeleton" style="height:380px;border-radius:var(--radius-xl)"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/index.html" class="footer-logo">
+            <div class="logo-mark" style="width:32px;height:32px;font-size:1rem;">T</div>
+            <span class="footer-logo-text">TECH<span>NOVA</span></span>
+          </a>
+          <p>Your premium destination for the latest technology products. We bring you the best from top brands worldwide.</p>
+        </div>
+        <div>
+          <div class="footer-heading">Shop</div>
+          <div class="footer-links">
+            <a href="/category.html?slug=smartphones">Smartphones</a>
+            <a href="/category.html?slug=laptops">Laptops</a>
+            <a href="/category.html?slug=headphones-earbuds">Headphones</a>
+            <a href="/category.html?slug=gaming">Gaming</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Account</div>
+          <div class="footer-links">
+            <a href="/account-profile.html">My Profile</a>
+            <a href="/account-orders.html">My Orders</a>
+            <a href="/wishlist.html">Wishlist</a>
+            <a href="/help.html">Help & Returns</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Support</div>
+          <div class="footer-links">
+            <a href="/help.html">Help Center</a>
+            <a href="/help.html#returns">Returns</a>
+            <a href="/help.html#contact">Contact Us</a>
+            <a href="/help.html#track">Track Order</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 TECHNOVA. All rights reserved.</span>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/cart.js"></script>
+  <script>
+    // Category icons map
+    const catIcons = { smartphones:'📱', laptops:'💻', tablets:'📟', 'headphones-earbuds':'🎧', smartwatches:'⌚', cameras:'📷', 'computer-accessories':'🖥️', gaming:'🎮' };
+
+    async function loadPage() {
+      Auth.updateHeaderUI();
+      await CartManager.updateBadge();
+      await WishlistManager.updateBadge();
+      await loadCategories();
+      await loadFeaturedProducts();
+      await loadNewArrivals();
+    }
+
+    async function loadCategories() {
+      const grid = document.getElementById('categories-grid');
+      try {
+        const data = await api.getCategories();
+        if (data.categories && data.categories.length) {
+          grid.innerHTML = data.categories.map(cat => `
+            <a href="/category.html?slug=${cat.slug}" class="category-card">
+              <div class="category-card-icon">${catIcons[cat.slug] || '📦'}</div>
+              <div class="category-card-name">${cat.category_name}</div>
+            </a>
+          `).join('');
+        }
+      } catch {
+        grid.innerHTML = `
+          ${Object.entries(catIcons).map(([slug, icon]) => `
+            <a href="/category.html?slug=${slug}" class="category-card">
+              <div class="category-card-icon">${icon}</div>
+              <div class="category-card-name">${slug.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>
+            </a>
+          `).join('')}
+        `;
+      }
+    }
+
+    async function loadFeaturedProducts() {
+      const grid = document.getElementById('featured-products');
+      try {
+        const data = await api.getFeaturedProducts();
+        const products = (data.products || []).slice(0, 4);
+        grid.innerHTML = products.length
+          ? products.map(buildProductCard).join('')
+          : '<p class="text-muted text-center w-full">No featured products found.</p>';
+      } catch {
+        grid.innerHTML = '<p class="text-muted text-center w-full">Could not load products. Make sure the backend is running.</p>';
+      }
+    }
+
+    async function loadNewArrivals() {
+      const grid = document.getElementById('new-arrivals');
+      try {
+        const data = await api.getProducts({ sort: '-createdAt', limit: 4 });
+        const products = data.products || [];
+        grid.innerHTML = products.length
+          ? products.map(buildProductCard).join('')
+          : '<p class="text-muted text-center w-full">No products found.</p>';
+      } catch {
+        grid.innerHTML = '<p class="text-muted text-center w-full">Could not load products.</p>';
+      }
+    }
+
+    // Search
+    document.getElementById('search-btn').addEventListener('click', () => {
+      const q = document.getElementById('search-input').value.trim();
+      if (q) window.location.href = `/search.html?q=${encodeURIComponent(q)}`;
+    });
+    document.getElementById('search-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('search-btn').click();
+    });
+
+    loadPage();
+  </script>
+</body>
+</html>
