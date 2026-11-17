@@ -8,6 +8,7 @@ const reviewSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
+  product_id: { type: String, sparse: true, index: true },
   name: { type: String, required: true, trim: true },
   brand: { type: String, required: true, trim: true },
   price: { type: Number, required: true, min: 0 },

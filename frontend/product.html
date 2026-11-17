@@ -55,7 +55,12 @@
       <div class="product-detail-layout">
         <div class="product-gallery">
           <div class="product-main-image skeleton" style="aspect-ratio:1"></div>
-          <div class="product-thumbs" style="margin-top:1rem">${Array(4).fill('<div class="skeleton" style="width:72px;height:72px;border-radius:var(--radius-lg);flex-shrink:0"></div>').join('')}</div>
+          <div class="product-thumbs" style="margin-top:1rem">
+            <div class="skeleton" style="width:72px;height:72px;border-radius:var(--radius-lg);flex-shrink:0"></div>
+            <div class="skeleton" style="width:72px;height:72px;border-radius:var(--radius-lg);flex-shrink:0"></div>
+            <div class="skeleton" style="width:72px;height:72px;border-radius:var(--radius-lg);flex-shrink:0"></div>
+            <div class="skeleton" style="width:72px;height:72px;border-radius:var(--radius-lg);flex-shrink:0"></div>
+          </div>
         </div>
         <div>
           <div class="skeleton" style="height:2rem;width:60%;margin-bottom:1rem"></div>
@@ -100,7 +105,7 @@
 
     function renderProduct(p) {
       const discount = calcDiscount(p.price, p.original_price);
-      const attrs = p.attributes ? Object.fromEntries(p.attributes) : {};
+      const attrs = (p.attributes instanceof Map) ? Object.fromEntries(p.attributes) : (p.attributes || {});
       document.title = `${p.name} — TECHNOVA`;
       document.getElementById('breadcrumb').innerHTML = `
         <a href="/index.html">Home</a><span class="breadcrumb-sep">›</span>

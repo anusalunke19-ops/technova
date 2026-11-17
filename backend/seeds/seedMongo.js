@@ -47,7 +47,41 @@ async function seed() {
 
     const makeAttrs = (obj) => new Map(Object.entries(obj));
 
-    const products = [
+    let products = [];
+    const excelPath = path.join(__dirname, 'products_catalogue.xlsx');
+    if (fs.existsSync(excelPath)) {
+      const xlsx = require('xlsx');
+      const wb = xlsx.readFile(excelPath);
+      const rows = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      products = rows.map(r => {
+        let attrs = new Map();
+        if (r.attributes) {
+          try {
+            const parsed = typeof r.attributes === 'string' ? JSON.parse(r.attributes) : r.attributes;
+            attrs = new Map(Object.entries(parsed));
+          } catch {}
+        }
+        return {
+          product_id: r.product_id,
+          name: r.name,
+          brand: r.brand,
+          price: parseFloat(r.price),
+          original_price: parseFloat(r.original_price || r.price),
+          description: r.description,
+          images: r.image_url ? r.image_url.split(',').map(s => s.trim()) : [],
+          category_id: catMap[r.category_slug],
+          category_slug: r.category_slug,
+          attributes: attrs,
+          rating: parseFloat(r.rating) || 4.5,
+          review_count: parseInt(r.review_count) || 100,
+          tags: r.tags ? r.tags.split(',').map(t => t.trim().toLowerCase()) : [],
+          is_active: true,
+          is_featured: String(r.is_featured).toLowerCase() === 'true'
+        };
+      });
+      console.log(`Loaded ${products.length} products from Excel catalogue (${excelPath})`);
+    } else {
+      products = [
       // SMARTPHONES (8)
       { name: 'iPhone 15 Pro Max', brand: 'Apple', price: 1199.99, original_price: 1299.99, description: 'The most powerful iPhone ever with titanium design, A17 Pro chip, and pro camera system.', images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600', 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600'], category_id: catMap['smartphones'], category_slug: 'smartphones', attributes: makeAttrs({ brand: 'Apple', display: '6.7-inch Super Retina XDR OLED', processor: 'A17 Pro', ram: '8 GB', storage: '256 GB', battery: '4422 mAh', camera: '48MP Triple', os: 'iOS 17', connectivity: '5G + WiFi 6E' }), rating: 4.9, review_count: 2847, tags: ['smartphone', 'apple', 'iphone', '5g'], is_active: true, is_featured: true },
       { name: 'Samsung Galaxy S24 Ultra', brand: 'Samsung', price: 1099.99, original_price: 1199.99, description: 'Galaxy AI is here. Titanium frame, built-in S Pen, and 200MP camera system.', images: ['https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600'], category_id: catMap['smartphones'], category_slug: 'smartphones', attributes: makeAttrs({ brand: 'Samsung', display: '6.8-inch QHD+ Dynamic AMOLED 2X', processor: 'Snapdragon 8 Gen 3', ram: '12 GB', storage: '256 GB', battery: '5000 mAh', camera: '200MP Quad', os: 'Android 14', connectivity: '5G + WiFi 7' }), rating: 4.8, review_count: 1923, tags: ['smartphone', 'samsung', 'galaxy', '5g', 's-pen'], is_active: true, is_featured: true },
@@ -116,6 +150,7 @@ async function seed() {
       { name: 'Razer BlackWidow V4 Pro', brand: 'Razer', price: 229.99, original_price: 249.99, description: 'Mechanical gaming keyboard with Razer Yellow optical switches and Command Dial.', images: ['https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600'], category_id: catMap['gaming'], category_slug: 'gaming', attributes: makeAttrs({ brand: 'Razer', type: 'Gaming Keyboard', platform: 'PC', connectivity: 'USB-A', layout: 'Full-size with Numpad', switches: 'Razer Yellow Optical (Hot-swappable)', rgb: 'Razer Chroma RGB', macro_keys: '6 Dedicated + Command Dial', polling_rate: '8000Hz' }), rating: 4.7, review_count: 1876, tags: ['gaming', 'keyboard', 'razer', 'mechanical', 'rgb'], is_active: true, is_featured: false },
       { name: 'Corsair Void RGB Elite Wireless', brand: 'Corsair', price: 99.99, original_price: 129.99, description: '7.1 Dolby surround sound gaming headset with 50mm drivers and 16 hours battery.', images: ['https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=600'], category_id: catMap['gaming'], category_slug: 'gaming', attributes: makeAttrs({ brand: 'Corsair', type: 'Gaming Headset', platform: 'PC + PS5 + PS4', connectivity: '2.4GHz Wireless + 3.5mm', battery_life: 'Up to 16 hours', driver_size: '50mm', microphone: 'Uni-directional', surround_sound: '7.1 Dolby Surround', weight: '338g' }), rating: 4.5, review_count: 4321, tags: ['gaming', 'headset', 'corsair', 'wireless', 'surround'], is_active: true, is_featured: false }
     ];
+  }
 
     const insertedProducts = await Product.insertMany(products);
     console.log(`Products inserted: ${insertedProducts.length}`);

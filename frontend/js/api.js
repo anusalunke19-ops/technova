@@ -3,7 +3,9 @@
  * Centralized fetch wrapper for all backend API calls
  */
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = (typeof window !== 'undefined' && window.location.port === '5000')
+  ? `${window.location.origin}/api`
+  : 'http://localhost:5000/api';
 
 class ApiClient {
   constructor() {
@@ -31,9 +33,15 @@ class ApiClient {
     if (body) options.body = JSON.stringify(body);
 
     const res = await fetch(`${this.baseUrl}${endpoint}`, options);
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
+      // If unauthorized on a protected endpoint, clear stale token
+      if ((res.status === 401 || res.status === 403) && auth) {
+        if (typeof window !== 'undefined' && window.Auth) {
+          window.Auth.clearSession();
+        }
+      }
       throw new Error(data.message || `HTTP ${res.status}`);
     }
     return data;
@@ -89,7 +97,11 @@ class ApiClient {
   getOrder(id) { return this.get(`/orders/${id}`, true); }
 
   // ===== Payments =====
-  simulatePayment(data) { return this.post('/payments/simulate', data); }
+  getPaymentConfig() { return this.get('/payments/config', false); }
+  createRazorpayOrder(data) { return this.post('/payments/razorpay/create-order', data, true); }
+  verifyRazorpayPayment(data) { return this.post('/payments/razorpay/verify', data, true); }
+  cancelRazorpayPayment(data) { return this.post('/payments/razorpay/cancel', data, true); }
+  simulatePayment(data) { return this.post('/payments/simulate', data, true); }
   getPayment(orderId) { return this.get(`/payments/${orderId}`, true); }
 
   // ===== Customers =====

@@ -122,26 +122,32 @@
       <h2 style="font-size:var(--font-size-2xl);font-weight:var(--font-weight-bold);margin-bottom:var(--space-6)">❓ Frequently Asked Questions</h2>
       <div class="faq-grid">
         <div>
-          ${[
-            ['What payment methods do you accept?', 'We accept all major credit cards (Visa, Mastercard, Amex), PayPal, and Apple Pay. All transactions are encrypted and secure.'],
-            ['How long does shipping take?', 'Standard shipping takes 5–7 business days. Express shipping is 2–3 days, and overnight shipping delivers the next business day.'],
-            ['Can I track my order?', 'Yes! Use the Order Tracking tool above with your order ID, or check your Account > My Orders page for real-time status updates.'],
-          ].map(([q, a]) => `
-            <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">${q} <span>›</span></div>
-              <div class="faq-answer">${a}</div>
-            </div>`).join('')}
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What payment methods do you accept? <span>›</span></div>
+            <div class="faq-answer">We accept credit and debit cards, UPI, net banking, and Razorpay Checkout in test mode and live mode.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How long does shipping take? <span>›</span></div>
+            <div class="faq-answer">Standard shipping takes 5–7 business days. Express shipping is 2–3 days, and overnight shipping delivers the next business day.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Can I track my order? <span>›</span></div>
+            <div class="faq-answer">Yes! Use the Order Tracking tool above with your order ID, or check your Account > My Orders page for real-time status updates.</div>
+          </div>
         </div>
         <div>
-          ${[
-            ['What is your return policy?', 'We offer a 30-day return policy on most items. Items must be in original condition with all accessories. Use the Returns form above to start.'],
-            ['Are my payment details secure?', 'Yes, all payment data is encrypted using SSL/TLS. For this academic demo, we simulate payment processing without storing card details.'],
-            ['How do I cancel an order?', 'You can cancel orders with "pending" status from your Account > My Orders page. Contact support for orders already in processing.'],
-          ].map(([q, a]) => `
-            <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">${q} <span>›</span></div>
-              <div class="faq-answer">${a}</div>
-            </div>`).join('')}
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What is your return policy? <span>›</span></div>
+            <div class="faq-answer">We offer a 30-day return policy on most items. Items must be in original condition with all accessories. Use the Returns form above to start.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Are my payment details secure? <span>›</span></div>
+            <div class="faq-answer">Yes, all payment data is processed through Razorpay's PCI-DSS compliant checkout. Card and credentials are never stored on our database.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How do I cancel an order? <span>›</span></div>
+            <div class="faq-answer">You can cancel orders with "pending" status from your Account > My Orders page. Contact support for orders already in processing.</div>
+          </div>
         </div>
       </div>
     </div>

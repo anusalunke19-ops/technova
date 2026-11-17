@@ -20,6 +20,7 @@
       <a href="/account-profile.html" id="account-btn" class="header-action-btn"><span>👤</span><span class="action-label" id="account-label">Account</span></a>
       <a href="/wishlist.html" class="header-action-btn"><span>♡</span><span class="action-label">Wishlist</span><span class="action-badge" id="wishlist-badge" style="display:none">0</span></a>
       <a href="/cart.html" class="header-action-btn"><span>🛒</span><span class="action-label">Cart</span><span class="action-badge" id="cart-badge" style="display:none">0</span></a>
+      <a href="/signin.html" id="logout-btn" class="header-action-btn" style="display:none"><span>🚪</span><span class="action-label">Logout</span></a>
     </div>
   </div></header>
   <nav class="category-nav"><div class="container"><div class="category-nav-inner">
@@ -45,9 +46,14 @@
     <div id="popular-searches" style="margin-bottom:var(--space-6)">
       <div style="font-size:var(--font-size-sm);font-weight:600;color:var(--color-text-secondary);margin-bottom:var(--space-3)">Popular searches:</div>
       <div style="display:flex;flex-wrap:wrap;gap:var(--space-2)">
-        ${['iPhone 15', 'MacBook Pro', 'Sony Headphones', 'Samsung', 'Gaming', 'AirPods', 'Laptop', 'Smartwatch'].map(t =>
-          `<a href="/search.html?q=${encodeURIComponent(t)}" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--color-primary)';this.style.color='var(--color-primary)'" onmouseout="this.style.borderColor='var(--color-border)';this.style.color='var(--color-text-secondary)'">${t}</a>`
-        ).join('')}
+        <a href="/search.html?q=iPhone%2015" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">iPhone 15</a>
+        <a href="/search.html?q=MacBook%20Pro" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">MacBook Pro</a>
+        <a href="/search.html?q=Sony%20Headphones" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">Sony Headphones</a>
+        <a href="/search.html?q=Samsung" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">Samsung</a>
+        <a href="/search.html?q=Gaming" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">Gaming</a>
+        <a href="/search.html?q=AirPods" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">AirPods</a>
+        <a href="/search.html?q=Laptop" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">Laptop</a>
+        <a href="/search.html?q=Smartwatch" style="padding:0.3rem 0.8rem;background:white;border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--font-size-xs);color:var(--color-text-secondary);text-decoration:none">Smartwatch</a>
       </div>
     </div>
 
@@ -80,18 +86,61 @@
     let query = params.get('q') || '';
     let currentPage = 1;
 
-    // Fill search input
+    // Fill search input initially
     if (query) {
       document.getElementById('search-input').value = query;
       document.getElementById('search-title').textContent = `Results for "${query}"`;
       document.title = `"${query}" — TECHNOVA Search`;
     }
 
-    document.getElementById('search-btn').addEventListener('click', () => {
-      query = document.getElementById('search-input').value.trim();
-      if (query) { history.pushState({}, '', `/search.html?q=${encodeURIComponent(query)}`); doSearch(); }
+    function executeSearch(newQuery) {
+      if (newQuery !== undefined) {
+        query = newQuery.trim();
+        document.getElementById('search-input').value = query;
+      } else {
+        query = document.getElementById('search-input').value.trim();
+      }
+
+      if (query) {
+        document.getElementById('search-title').textContent = `Results for "${query}"`;
+        document.title = `"${query}" — TECHNOVA Search`;
+        const newUrl = `/search.html?q=${encodeURIComponent(query)}`;
+        if (window.location.search !== `?q=${encodeURIComponent(query)}`) {
+          history.pushState({ q: query }, '', newUrl);
+        }
+      } else {
+        document.getElementById('search-title').textContent = 'Search Products';
+        document.title = 'Search — TECHNOVA';
+      }
+      doSearch(1);
+    }
+
+    document.getElementById('search-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      executeSearch();
     });
-    document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('search-btn').click(); });
+
+    document.getElementById('search-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        executeSearch();
+      }
+    });
+
+    window.addEventListener('popstate', () => {
+      const q = new URLSearchParams(window.location.search).get('q') || '';
+      executeSearch(q);
+    });
+
+    // Make popular search badges clickable without full page refresh
+    document.querySelectorAll('#popular-searches a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = new URL(a.href, window.location.origin);
+        const q = url.searchParams.get('q');
+        if (q) executeSearch(q);
+      });
+    });
 
     async function doSearch(page = 1) {
       currentPage = page;
@@ -102,6 +151,7 @@
       if (!query) {
         grid.innerHTML = '<div class="empty-state w-full"><div class="empty-state-icon">🔍</div><div class="empty-state-title">Enter a search term</div><div class="empty-state-desc">Search for smartphones, laptops, headphones, and more</div></div>';
         document.getElementById('result-count').textContent = '';
+        document.getElementById('search-desc').textContent = '';
         return;
       }
 
@@ -120,12 +170,14 @@
               <div class="empty-state-desc">Try different keywords, check spelling, or browse categories</div>
               <a href="/shop.html" class="btn btn-primary" style="margin-top:1rem">Browse All Products</a>
             </div>`;
+          document.getElementById('pagination').innerHTML = '';
           return;
         }
         grid.innerHTML = products.map(buildProductCard).join('');
         renderPagination(data.pages || 1, page);
       } catch(err) {
         grid.innerHTML = `<div class="empty-state w-full" style="grid-column:1/-1"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">Search unavailable</div><div class="empty-state-desc">${err.message}. Make sure the backend is running.</div></div>`;
+        document.getElementById('pagination').innerHTML = '';
       }
     }
 

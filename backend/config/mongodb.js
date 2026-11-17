@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+// Disable command buffering so disconnected queries fail fast rather than hanging indefinitely
+mongoose.set('bufferCommands', false);
+mongoose.set('bufferTimeoutMS', 1500);
+
 let isConnected = false;
 
 async function connectMongoDB() {
@@ -7,8 +11,7 @@ async function connectMongoDB() {
 
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/technova', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 2000,
     });
     isConnected = true;
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
@@ -18,4 +21,8 @@ async function connectMongoDB() {
   }
 }
 
-module.exports = { connectMongoDB, mongoose };
+module.exports = {
+  connectMongoDB,
+  mongoose,
+  isMongoConnected: () => mongoose.connection.readyState === 1
+};

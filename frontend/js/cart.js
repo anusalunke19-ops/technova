@@ -103,7 +103,9 @@ window.calcDiscount = calcDiscount;
 // ===== Product Card Builder =====
 function buildProductCard(product) {
   const discount = calcDiscount(product.price, product.original_price);
-  const attrs = product.attributes ? Object.fromEntries(product.attributes) : {};
+  const attrs = (product.attributes instanceof Map)
+    ? Object.fromEntries(product.attributes)
+    : (product.attributes || {});
   return `
     <div class="product-card">
       <div class="product-card-image">

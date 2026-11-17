@@ -123,9 +123,11 @@
           </div>`).join('');
 
         // Build attribute comparison table
+        const getAttrs = p => (p && p.attributes instanceof Map ? Object.fromEntries(p.attributes) : (p && p.attributes ? p.attributes : {}));
         const allAttrs = new Set();
         products.forEach(p => {
-          if (p.attributes) Object.keys(Object.fromEntries(p.attributes)).forEach(k => allAttrs.add(k));
+          const a = getAttrs(p);
+          Object.keys(a).forEach(k => allAttrs.add(k));
         });
         const baseRows = [
           { label: 'Brand', key: 'brand', getter: p => p.brand },
@@ -147,7 +149,7 @@
           const label = attr.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
           tableHtml += `<tr><td>${label}</td>`;
           cols.forEach(p => {
-            const val = p?.attributes ? Object.fromEntries(p.attributes)[attr] : null;
+            const val = getAttrs(p)[attr];
             tableHtml += `<td>${val || '—'}</td>`;
           });
           tableHtml += '</tr>';

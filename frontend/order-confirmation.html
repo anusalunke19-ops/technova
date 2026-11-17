@@ -90,7 +90,10 @@
 
     if (orderId) {
       document.getElementById('order-id-display').textContent = `#${orderId}`;
-      document.getElementById('ref-display').textContent = ref ? `Payment Ref: ${ref}` : '';
+      const isRazorpay = ref && ref.startsWith('pay_');
+      document.getElementById('ref-display').innerHTML = ref 
+        ? `${isRazorpay ? '⚡ Razorpay Payment ID' : 'Payment Ref'}: <code style="font-weight:700;color:var(--color-navy)">${ref}</code>` 
+        : '';
       loadOrderDetails(orderId);
     } else {
       document.getElementById('order-details-content').innerHTML = '<p class="text-muted text-center">Order details unavailable.</p>';

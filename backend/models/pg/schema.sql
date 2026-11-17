@@ -47,11 +47,17 @@ CREATE TABLE IF NOT EXISTS order_items (
 CREATE TABLE IF NOT EXISTS payments (
   payment_id SERIAL PRIMARY KEY,
   order_id INTEGER UNIQUE REFERENCES orders(order_id) ON DELETE CASCADE,
+  razorpay_order_id VARCHAR(100),
+  razorpay_payment_id VARCHAR(100),
+  razorpay_signature VARCHAR(255),
   amount DECIMAL(10,2) NOT NULL,
-  payment_status VARCHAR(50) DEFAULT 'pending' CHECK (payment_status IN ('pending','completed','failed','refunded')),
+  currency VARCHAR(10) DEFAULT 'INR',
+  payment_status VARCHAR(50) DEFAULT 'pending' CHECK (payment_status IN ('pending','completed','failed','refunded','paid')),
   payment_method VARCHAR(50),
   payment_reference VARCHAR(100) UNIQUE,
   payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   metadata JSONB
 );
 
@@ -79,6 +85,8 @@ CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_payments_order ON payments(order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_razorpay_order ON payments(razorpay_order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_razorpay_payment ON payments(razorpay_payment_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_product ON inventory(product_id);
 CREATE INDEX IF NOT EXISTS idx_alerts_status ON low_stock_alerts(alert_status);
 

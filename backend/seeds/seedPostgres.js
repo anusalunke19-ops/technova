@@ -50,20 +50,20 @@ async function seed() {
     await client.query('ALTER SEQUENCE inventory_inventory_id_seq RESTART WITH 1');
     console.log('✅ Cleared existing data and reset sequences');
 
-    // Stock ranges per category: smartphones(8), laptops(8), tablets(5), headphones(8), watches(5), cameras(5), accessories(8), gaming(5)
-    const stockRanges = [
-      ...Array(8).fill({ min: 50, max: 200, threshold: 10 }),  // smartphones
-      ...Array(8).fill({ min: 20, max: 100, threshold: 5 }),   // laptops
-      ...Array(5).fill({ min: 30, max: 120, threshold: 8 }),   // tablets
-      ...Array(8).fill({ min: 100, max: 300, threshold: 20 }), // headphones
-      ...Array(5).fill({ min: 40, max: 150, threshold: 10 }),  // smartwatches
-      ...Array(5).fill({ min: 15, max: 60, threshold: 5 }),    // cameras
-      ...Array(8).fill({ min: 80, max: 250, threshold: 15 }),  // accessories
-      ...Array(5).fill({ min: 50, max: 180, threshold: 12 }),  // gaming
+    // Stock profiles per category type (applied modularly across all products)
+    const categoryProfiles = [
+      { min: 50, max: 200, threshold: 10 }, // smartphones
+      { min: 20, max: 80, threshold: 5 },   // laptops
+      { min: 30, max: 120, threshold: 8 },  // tablets
+      { min: 80, max: 250, threshold: 15 }, // headphones
+      { min: 40, max: 150, threshold: 10 }, // smartwatches
+      { min: 10, max: 50, threshold: 5 },   // cameras
+      { min: 60, max: 220, threshold: 12 }, // accessories
+      { min: 40, max: 160, threshold: 10 }, // gaming
     ];
 
     for (let i = 0; i < productIds.length; i++) {
-      const range = stockRanges[i] || { min: 50, max: 150, threshold: 10 };
+      const range = categoryProfiles[i % categoryProfiles.length];
       const stock = Math.floor(Math.random() * (range.max - range.min) + range.min);
       await client.query(
         'INSERT INTO inventory (product_id, stock_quantity, threshold) VALUES ($1, $2, $3) ON CONFLICT (product_id) DO UPDATE SET stock_quantity = $2, threshold = $3',

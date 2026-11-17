@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment — TECHNOVA</title>
-  <meta name="description" content="Securely pay for your TECHNOVA order using card, PayPal, or Apple Pay.">
+  <meta name="description" content="Securely pay for your TECHNOVA order using Razorpay, Card, UPI, or Wallets.">
   <link rel="stylesheet" href="/css/global.css"><link rel="stylesheet" href="/css/components.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-8); align-items: start; }
     .checkout-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: var(--space-6); margin-bottom: var(--space-5); }
@@ -14,6 +15,7 @@
     .card-form.visible { display: block; }
     .card-icons { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
     .card-icon-badge { background: var(--color-background); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 2px 8px; font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); }
+    .razorpay-badge { background: linear-gradient(135deg, #0d233a, #0c2340); color: #528ff0; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
     @media(max-width:768px){ .checkout-layout{grid-template-columns:1fr;} }
   </style>
 </head>
@@ -37,13 +39,13 @@
 
     <div class="checkout-layout">
       <div>
-        <!-- Demo Notice -->
-        <div class="payment-demo-notice">
-          <div class="notice-icon">🧪</div>
+        <!-- Razorpay Gateway Notice -->
+        <div class="payment-demo-notice" style="background:#f0f7ff;border-color:#bae0ff">
+          <div class="notice-icon">⚡</div>
           <div>
-            <strong>Academic Demo — Simulated Payment</strong>
-            Use test card <strong>4242 4242 4242 4242</strong> (any expiry/CVV) for success.<br>
-            Use <strong>4000 0000 0000 0002</strong> for a declined card simulation.
+            <strong>Razorpay Payment Gateway Integration</strong><br>
+            Supports UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, Netbanking & Wallets.<br>
+            <span style="font-size:var(--font-size-xs);color:var(--color-text-muted)">Testing in Test Mode? Complete payment via the official Razorpay test modal without real money deduction.</span>
           </div>
         </div>
 
@@ -51,14 +53,29 @@
         <div class="checkout-card">
           <div class="checkout-card-title">💳 Payment Method</div>
           <div class="payment-methods">
-            <div class="payment-method-card selected" id="pm-card" onclick="selectPayment('card')">
+            <!-- Razorpay Option (Primary) -->
+            <div class="payment-method-card selected" id="pm-razorpay" onclick="selectPayment('razorpay')">
+              <div class="payment-method-icon">⚡</div>
+              <div class="payment-method-info">
+                <div class="payment-method-name" style="display:flex;align-items:center;gap:8px">
+                  Razorpay <span class="razorpay-badge">Official Gateway</span>
+                </div>
+                <div class="payment-method-desc">UPI, Cards, Netbanking, Wallets & PayLater</div>
+              </div>
+              <input type="radio" name="payment-type" value="razorpay" checked style="margin-left:auto;accent-color:var(--color-primary)">
+            </div>
+
+            <!-- Direct Card Option -->
+            <div class="payment-method-card" id="pm-card" onclick="selectPayment('card')">
               <div class="payment-method-icon">💳</div>
               <div class="payment-method-info">
                 <div class="payment-method-name">Credit / Debit Card</div>
-                <div class="payment-method-desc">Visa, Mastercard, Amex, Discover</div>
+                <div class="payment-method-desc">Visa, Mastercard, RuPay, Amex</div>
               </div>
-              <input type="radio" name="payment-type" value="card" checked style="margin-left:auto;accent-color:var(--color-primary)">
+              <input type="radio" name="payment-type" value="card" style="margin-left:auto;accent-color:var(--color-primary)">
             </div>
+
+            <!-- PayPal Option -->
             <div class="payment-method-card" id="pm-paypal" onclick="selectPayment('paypal')">
               <div class="payment-method-icon">🅿️</div>
               <div class="payment-method-info">
@@ -67,39 +84,52 @@
               </div>
               <input type="radio" name="payment-type" value="paypal" style="margin-left:auto;accent-color:var(--color-primary)">
             </div>
+
+            <!-- Apple Pay Option -->
             <div class="payment-method-card" id="pm-apple" onclick="selectPayment('apple_pay')">
               <div class="payment-method-icon">🍎</div>
               <div class="payment-method-info">
                 <div class="payment-method-name">Apple Pay</div>
-                <div class="payment-method-desc">Pay with Touch ID or Face ID</div>
+                <div class="payment-method-desc">Pay with Touch ID or Apple Wallet</div>
               </div>
               <input type="radio" name="payment-type" value="apple_pay" style="margin-left:auto;accent-color:var(--color-primary)">
             </div>
           </div>
 
+          <!-- Razorpay Form / Information -->
+          <div class="card-form visible" id="razorpay-form">
+            <div style="background:var(--color-background);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);margin-top:var(--space-4)">
+              <div style="font-weight:600;font-size:var(--font-size-sm);margin-bottom:var(--space-2)">🔒 What happens next?</div>
+              <p style="font-size:var(--font-size-xs);color:var(--color-text-secondary);line-height:1.6">
+                When you click <strong>Review Order</strong> and proceed, the official <strong>Razorpay Checkout</strong> interface will open securely to process your payment. Your credentials are fully protected and never stored on our servers.
+              </p>
+            </div>
+          </div>
+
           <!-- Card Form -->
-          <div class="card-form visible" id="card-form">
+          <div class="card-form" id="card-form">
             <div class="card-icons">
               <span class="card-icon-badge">VISA</span>
-              <span class="card-icon-badge">MC</span>
+              <span class="card-icon-badge">MASTERCARD</span>
+              <span class="card-icon-badge">RUPAY</span>
               <span class="card-icon-badge">AMEX</span>
             </div>
             <div class="form-group">
               <label class="form-label">Cardholder Name <span>*</span></label>
-              <input type="text" id="card-name" class="form-input" placeholder="John Doe" required>
+              <input type="text" id="card-name" class="form-input" placeholder="Ananya Sharma">
             </div>
             <div class="form-group">
               <label class="form-label">Card Number <span>*</span></label>
-              <input type="text" id="card-number" class="form-input" placeholder="4242 4242 4242 4242" maxlength="19" required>
+              <input type="text" id="card-number" class="form-input" placeholder="4242 4242 4242 4242" maxlength="19">
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Expiry Date <span>*</span></label>
-                <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5" required>
+                <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5">
               </div>
               <div class="form-group">
                 <label class="form-label">CVV <span>*</span></label>
-                <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="4" required>
+                <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="4">
               </div>
             </div>
           </div>
@@ -110,14 +140,14 @@
               <label class="form-label">PayPal Email</label>
               <input type="email" id="paypal-email" class="form-input" placeholder="yourpaypal@email.com">
             </div>
-            <p style="font-size:var(--font-size-xs);color:var(--color-text-muted)">You will be redirected to PayPal to complete your payment (simulated).</p>
+            <p style="font-size:var(--font-size-xs);color:var(--color-text-muted)">You will be connected to PayPal to authenticate your transaction.</p>
           </div>
 
           <!-- Apple Pay Form -->
           <div class="card-form" id="apple-form">
             <div style="text-align:center;padding:var(--space-5);background:var(--color-background);border-radius:var(--radius-lg)">
               <div style="font-size:3rem;margin-bottom:var(--space-3)">🍎</div>
-              <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-4)">Complete payment using Apple Pay (simulated for academic demo)</p>
+              <p style="font-size:var(--font-size-sm);color:var(--color-text-secondary);margin-bottom:var(--space-4)">Complete payment quickly using Apple Pay</p>
               <div style="background:black;color:white;border-radius:var(--radius-lg);padding:0.75rem 2rem;display:inline-block;font-size:var(--font-size-sm);font-weight:600">🍎 Pay with Apple Pay</div>
             </div>
           </div>
@@ -140,11 +170,11 @@
           <div id="summary-items" style="margin-bottom:var(--space-4);max-height:200px;overflow-y:auto"></div>
           <div class="order-summary-row"><span>Subtotal</span><span id="sum-subtotal">—</span></div>
           <div class="order-summary-row"><span>Shipping</span><span id="sum-shipping">—</span></div>
-          <div class="order-summary-row"><span>Tax</span><span id="sum-tax">—</span></div>
+          <div class="order-summary-row"><span>Tax (8%)</span><span id="sum-tax">—</span></div>
           <div class="order-summary-row total"><span>Total</span><span id="sum-total">—</span></div>
           <button id="pay-btn" class="btn btn-primary btn-block btn-lg" style="margin-top:var(--space-4)" onclick="continueToReview()">Review Order →</button>
           <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-2);margin-top:var(--space-4);font-size:var(--font-size-xs);color:var(--color-text-muted)">
-            🔒 SSL Encrypted · Secure Payment
+            🔒 256-Bit SSL Encrypted · Razorpay Secure
           </div>
         </div>
       </div>
@@ -175,38 +205,69 @@
       </div>`).join('');
 
     // Card number formatting
-    document.getElementById('card-number').addEventListener('input', function() {
-      let v = this.value.replace(/\D/g,'').substring(0,16);
-      this.value = v.replace(/(.{4})/g,'$1 ').trim();
-    });
-    document.getElementById('card-expiry').addEventListener('input', function() {
-      let v = this.value.replace(/\D/g,'').substring(0,4);
-      if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
-      this.value = v;
-    });
+    const cardNumEl = document.getElementById('card-number');
+    if (cardNumEl) {
+      cardNumEl.addEventListener('input', function() {
+        let v = this.value.replace(/\D/g,'').substring(0,16);
+        this.value = v.replace(/(.{4})/g,'$1 ').trim();
+      });
+    }
+    const cardExpEl = document.getElementById('card-expiry');
+    if (cardExpEl) {
+      cardExpEl.addEventListener('input', function() {
+        let v = this.value.replace(/\D/g,'').substring(0,4);
+        if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+        this.value = v;
+      });
+    }
 
     function selectPayment(method) {
       document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
       document.querySelectorAll('.card-form').forEach(f => f.classList.remove('visible'));
-      document.getElementById(`pm-${method.replace('_pay','')}`).classList.add('selected');
-      const formMap = { card: 'card-form', paypal: 'paypal-form', apple_pay: 'apple-form' };
-      if (formMap[method]) document.getElementById(formMap[method]).classList.add('visible');
+
+      const radio = document.querySelector(`input[name="payment-type"][value="${method}"]`);
+      if (radio) radio.checked = true;
+
+      const cardMap = {
+        razorpay: 'pm-razorpay',
+        card: 'pm-card',
+        paypal: 'pm-paypal',
+        apple_pay: 'pm-apple'
+      };
+      if (cardMap[method]) {
+        document.getElementById(cardMap[method])?.classList.add('selected');
+      }
+
+      const formMap = {
+        razorpay: 'razorpay-form',
+        card: 'card-form',
+        paypal: 'paypal-form',
+        apple_pay: 'apple-form'
+      };
+      if (formMap[method]) {
+        document.getElementById(formMap[method])?.classList.add('visible');
+      }
     }
 
     function continueToReview() {
       const method = document.querySelector('input[name="payment-type"]:checked').value;
       let paymentData = { method };
+
       if (method === 'card') {
         const num = document.getElementById('card-number').value.replace(/\s/g,'');
         const exp = document.getElementById('card-expiry').value;
         const cvv = document.getElementById('card-cvv').value;
         const name = document.getElementById('card-name').value;
-        if (!num || !exp || !cvv || !name) { showToast('Please fill in all card details', 'error'); return; }
+        if (!num || !exp || !cvv || !name) {
+          showToast('Please fill in all card details', 'error');
+          return;
+        }
         paymentData.cardNumber = num;
         paymentData.cardLast4 = num.slice(-4);
         paymentData.cardExpiry = exp;
         paymentData.cardName = name;
       }
+
       sessionStorage.setItem('tn_payment_data', JSON.stringify(paymentData));
       window.location.href = '/checkout-review.html';
     }
